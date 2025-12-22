@@ -6,7 +6,7 @@ function App() {
       {/* Hero Section */}
       <section className="hero">
         <img
-          src="/images/swolie-proud.png"
+          src={`${import.meta.env.BASE_URL}images/swolie-proud.png`}
           alt="Swolie mascot"
           className="hero-image"
         />
