@@ -195,6 +195,26 @@
   margin: 0;
 }
 
+.footer-links {
+  margin-bottom: 0.75rem;
+}
+
+.footer-links a {
+  color: #2EBDA8;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.footer-links a:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+.footer-divider {
+  margin: 0 0.5rem;
+  color: #ccc;
+}
+
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
   .tagline {
@@ -236,6 +256,10 @@
 
   .footer {
     color: #666;
+  }
+
+  .footer-divider {
+    color: #444;
   }
 }
 

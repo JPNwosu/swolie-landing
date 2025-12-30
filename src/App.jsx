@@ -74,6 +74,11 @@ function App() {
 
       {/* Footer */}
       <footer className="footer">
+        <div className="footer-links">
+          <a href="/privacy">Privacy Policy</a>
+          <span className="footer-divider">|</span>
+          <a href="/terms">Terms of Service</a>
+        </div>
         <p>&copy; {new Date().getFullYear()} Swolie. All rights reserved.</p>
       </footer>
     </div>
