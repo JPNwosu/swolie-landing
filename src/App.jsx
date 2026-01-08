@@ -2,71 +2,126 @@ import './App.css'
 
 function App() {
   return (
-    <div className="container">
+    <div className="page">
+      {/* Background Effects */}
+      <div className="bg-gradient" />
+      <div className="bg-glow bg-glow-1" />
+      <div className="bg-glow bg-glow-2" />
+      <div className="noise-overlay" />
+
+      {/* Navigation */}
+      <nav className="nav">
+        <div className="nav-brand">
+          <img
+            src={`${import.meta.env.BASE_URL}images/swolie-proud.png`}
+            alt="Swolie"
+            className="nav-logo"
+          />
+          <span className="nav-name">Swolie</span>
+        </div>
+        <a
+          href="https://apps.apple.com/us/app/swolie-gym-workout-tracker/id6756705472"
+          className="nav-cta"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Download
+        </a>
+      </nav>
+
       {/* Hero Section */}
       <section className="hero">
-        <img
-          src={`${import.meta.env.BASE_URL}images/swolie-proud.png`}
-          alt="Swolie mascot"
-          className="hero-image"
-        />
-        <h1 className="title">Swolie</h1>
-        <p className="tagline">Your Virtual Workout Buddy</p>
-        <p className="description">
-          Track your workouts, build streaks, and stay motivated with Swolie —
-          a fitness companion that celebrates your consistency and keeps you on track.
-        </p>
+        <div className="hero-content">
+          <h1 className="hero-title">
+            <span className="title-brand">Swolie</span>
+            Your Virtual <span className="title-accent">Gym Buddy</span>
+          </h1>
+          <p className="hero-subtitle">
+            Track every rep, build streaks, and stay motivated with Swolie.
+            Your personal gym partner that celebrates your wins.
+          </p>
+          <div className="hero-actions">
+            <a
+              href="https://apps.apple.com/us/app/swolie-gym-workout-tracker/id6756705472"
+              className="app-store-link"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img
+                src={`${import.meta.env.BASE_URL}images/app-store-badge.svg`}
+                alt="Download on the App Store"
+                className="app-store-img"
+              />
+            </a>
+          </div>
+        </div>
 
-        {/* App Store Badge */}
-        <div className="app-store-badge">
-          <svg viewBox="0 0 24 24" className="apple-icon" fill="currentColor">
-            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
-          </svg>
-          <div className="badge-text">
-            <span className="badge-subtitle">Coming Soon on the</span>
-            <span className="badge-title">App Store</span>
+        <div className="hero-visual">
+          <div className="phone-glow" />
+          <div className="phone-container">
+            <img
+              src={`${import.meta.env.BASE_URL}images/swolie-landing-home.png`}
+              alt="Swolie app interface"
+              className="phone-mockup"
+            />
+            <img
+              src={`${import.meta.env.BASE_URL}images/swolie-proud.png`}
+              alt="Swolie mascot"
+              className="floating-mascot"
+            />
           </div>
         </div>
       </section>
 
       {/* Features Section */}
       <section className="features">
-        <div className="feature">
-          <div className="feature-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
-            </svg>
-          </div>
-          <h3>Build Streaks</h3>
-          <p>Stay consistent with daily workout streaks that keep you motivated</p>
+        <div className="features-header">
+          <h2 className="section-title">Build Streaks. Build Muscle.</h2>
+          <p className="section-subtitle">Simple, powerful tools to crush your fitness goals</p>
         </div>
-        <div className="feature">
-          <div className="feature-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M12 20V10M18 20V4M6 20v-4"/>
-            </svg>
+
+        <div className="features-grid">
+          <div className="feature-card">
+            <h3>Track Every Rep</h3>
+            <p>Log your workouts with an intuitive interface designed for the gym floor</p>
           </div>
-          <h3>Track Progress</h3>
-          <p>See your fitness journey with beautiful charts and insights</p>
+
+          <div className="feature-card">
+            <h3>Build Your Routine</h3>
+            <p>Create custom workout templates or choose from pre-built routines</p>
+          </div>
+
+          <div className="feature-card">
+            <h3>Stay Accountable</h3>
+            <p>Swolie celebrates every win and keeps you coming back for more</p>
+          </div>
         </div>
-        <div className="feature">
-          <div className="feature-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M12 8c-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4-1.79-4-4-4z"/>
-              <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
-            </svg>
-          </div>
-          <h3>Stay Motivated</h3>
-          <p>Swolie celebrates every win and cheers you on</p>
+      </section>
+
+      {/* CTA Section */}
+      <section className="cta-section">
+        <div className="cta-content">
+          <h2>Ready to Get Swolie?</h2>
+          <p>Join thousands crushing their fitness goals with their new favorite gym buddy.</p>
+          <a
+            href="https://apps.apple.com/us/app/swolie-gym-workout-tracker/id6756705472"
+            className="app-store-link"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src={`${import.meta.env.BASE_URL}images/app-store-badge.svg`}
+              alt="Download on the App Store"
+              className="app-store-img"
+            />
+          </a>
         </div>
       </section>
 
       {/* Support Section */}
       <section className="support">
-        <h2>Need Help?</h2>
-        <p>
-          Have questions, feedback, or need support? We'd love to hear from you.
-        </p>
+        <h3>Need Help?</h3>
+        <p>Questions, feedback, or just want to say hi? We'd love to hear from you.</p>
         <a href="mailto:support@swolie.com" className="support-link">
           support@swolie.com
         </a>
@@ -74,12 +129,23 @@ function App() {
 
       {/* Footer */}
       <footer className="footer">
-        <div className="footer-links">
-          <a href="/privacy">Privacy Policy</a>
-          <span className="footer-divider">|</span>
-          <a href="/terms">Terms of Service</a>
+        <div className="footer-content">
+          <div className="footer-brand">
+            <img
+              src={`${import.meta.env.BASE_URL}images/swolie-proud.png`}
+              alt="Swolie"
+              className="footer-logo"
+            />
+            <span>Swolie</span>
+          </div>
+          <div className="footer-links">
+            <a href="/privacy/index.html">Privacy Policy</a>
+            <a href="/terms/index.html">Terms of Service</a>
+          </div>
         </div>
-        <p>&copy; {new Date().getFullYear()} Swolie. All rights reserved.</p>
+        <div className="footer-bottom">
+          <p>&copy; {new Date().getFullYear()} Swolie. All rights reserved.</p>
+        </div>
       </footer>
     </div>
   )
