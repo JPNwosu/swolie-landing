@@ -1,0 +1,11 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "SFPZK4W7JA.Koahzee.Swolie",
+        "paths": ["/share", "/share/*", "/share?*"]
+      }
+    ]
+  }
+}
