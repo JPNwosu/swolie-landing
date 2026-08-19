@@ -1,0 +1,639 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0a0e0d" />
+    <title>Shared workout · swolie</title>
+    <meta name="description" content="Someone sent you a Swolie workout. Open it in the app to add it to your week — free for iPhone and Apple Watch." />
+
+    <!-- Brand typography (same families as the main site) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/images/appicon-light.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/appicon-light.png" />
+    <meta name="apple-mobile-web-app-title" content="swolie" />
+
+    <!-- Open Graph / Social — crawlers don't run JS, so this stays generic.
+         The mascot card lives at /images/og-share.png (1200×630). -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="swolie" />
+    <meta property="og:url" content="https://swolie.com/share" />
+    <meta property="og:title" content="Someone sent you a Swolie workout" />
+    <meta property="og:description" content="Open it in Swolie to add it to your week — free for iPhone and Apple Watch." />
+    <meta property="og:image" content="https://swolie.com/images/og-share.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Someone sent you a Swolie workout" />
+    <meta name="twitter:description" content="Open it in Swolie to add it to your week — free for iPhone and Apple Watch." />
+    <meta name="twitter:image" content="https://swolie.com/images/og-share.png" />
+
+    <style>
+      :root {
+        --page: #0a0e0d;
+        --surface: #121716;
+        --line-soft: rgba(217, 247, 237, 0.12);
+        --teal: #2ebda8;
+        --teal-dark: #249485;
+        --mint: #d9f7ed;
+        --white: #f2fbf8;
+        --muted: #9aa5a2;
+        --dim: #68736f;
+        --card-ink: #212121;
+        --card-subtle: #737373;
+        --card-hairline: #ebebeb;
+        --display: 'Outfit', sans-serif;
+        --wordmark: 'Fredoka', sans-serif;
+      }
+
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+
+      html { color-scheme: dark; }
+
+      body {
+        min-height: 100svh;
+        background: var(--page);
+        color: var(--white);
+        font-family: var(--display);
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+      }
+
+      /* Atmosphere: one deep teal glow behind the card + fine grain */
+      .glow {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        background:
+          radial-gradient(560px 560px at 50% 38%, rgba(46, 189, 168, 0.17), transparent 68%),
+          radial-gradient(900px 620px at 50% 110%, rgba(15, 118, 104, 0.12), transparent 70%);
+      }
+
+      .grain {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0.05;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E");
+      }
+
+      .page {
+        position: relative;
+        max-width: 560px;
+        margin: 0 auto;
+        padding: 22px 22px 56px;
+      }
+
+      /* Header */
+      .top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-bottom: 34px;
+      }
+
+      .brand {
+        font-family: var(--wordmark);
+        font-weight: 600;
+        font-size: 26px;
+        color: var(--teal);
+        text-decoration: none;
+        letter-spacing: 0.01em;
+      }
+
+      .top-link {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--mint);
+        text-decoration: none;
+        border: 1px solid var(--line-soft);
+        border-radius: 999px;
+        padding: 8px 16px;
+        transition: border-color 160ms ease, color 160ms ease;
+      }
+
+      .top-link:hover { border-color: var(--teal); color: var(--teal); }
+
+      /* Hero copy */
+      .eyebrow {
+        display: inline-block;
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--teal);
+        padding: 6px 12px;
+        border: 1px solid rgba(46, 189, 168, 0.35);
+        border-radius: 999px;
+        background: rgba(46, 189, 168, 0.08);
+      }
+
+      h1 {
+        font-size: clamp(30px, 7.6vw, 40px);
+        font-weight: 900;
+        line-height: 1.08;
+        letter-spacing: -0.02em;
+        margin: 16px 0 10px;
+      }
+
+      h1 .routine-name { color: var(--teal); overflow-wrap: anywhere; }
+
+      .subline {
+        font-size: 16px;
+        font-weight: 500;
+        color: var(--muted);
+        line-height: 1.55;
+        max-width: 44ch;
+      }
+
+      /* Card + mascot */
+      .card-zone { position: relative; margin-top: 46px; }
+
+      .mascot {
+        position: absolute;
+        top: -58px;
+        right: -6px;
+        width: 118px;
+        height: 118px;
+        z-index: 2;
+        filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.45));
+      }
+
+      .ring {
+        position: absolute;
+        top: -84px;
+        right: -44px;
+        width: 190px;
+        height: 190px;
+        border: 2px dotted rgba(46, 189, 168, 0.28);
+        border-radius: 50%;
+        z-index: 1;
+      }
+
+      .card {
+        position: relative;
+        z-index: 1;
+        border-radius: 22px;
+        overflow: hidden;
+        background: #ffffff;
+        box-shadow:
+          0 30px 70px rgba(0, 0, 0, 0.55),
+          0 0 0 1px rgba(217, 247, 237, 0.07),
+          0 6px 26px rgba(46, 189, 168, 0.14);
+      }
+
+      .card-head {
+        background: linear-gradient(135deg, var(--teal), var(--teal-dark));
+        padding: 22px 22px 18px;
+        color: #ffffff;
+      }
+
+      .card-head .mark {
+        font-family: var(--wordmark);
+        font-weight: 600;
+        font-size: 17px;
+        opacity: 0.95;
+      }
+
+      .card-title {
+        font-family: var(--wordmark);
+        font-weight: 600;
+        font-size: 27px;
+        line-height: 1.15;
+        margin-top: 10px;
+        overflow-wrap: anywhere;
+      }
+
+      .card-meta {
+        font-size: 13px;
+        font-weight: 600;
+        opacity: 0.92;
+        margin-top: 5px;
+      }
+
+      .rows { list-style: none; padding: 6px 0; }
+
+      .row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 20px;
+      }
+
+      .row + .row { border-top: 1px solid var(--card-hairline); }
+
+      .row-num {
+        flex: none;
+        width: 27px;
+        height: 27px;
+        border-radius: 50%;
+        background: rgba(46, 189, 168, 0.14);
+        color: var(--teal-dark);
+        font-weight: 800;
+        font-size: 13px;
+        display: grid;
+        place-items: center;
+      }
+
+      .row-main { min-width: 0; flex: 1; }
+
+      .row-name {
+        color: var(--card-ink);
+        font-weight: 700;
+        font-size: 15px;
+        line-height: 1.25;
+        overflow-wrap: anywhere;
+      }
+
+      .row-alt {
+        color: var(--card-subtle);
+        font-weight: 500;
+        font-size: 11.5px;
+        margin-top: 2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .row-detail {
+        flex: none;
+        color: var(--card-subtle);
+        font-weight: 600;
+        font-size: 12.5px;
+        white-space: nowrap;
+      }
+
+      .row.more .row-name { color: var(--card-subtle); font-weight: 600; font-size: 13px; }
+
+      .card-foot {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 20px;
+        background: #f4f8f7;
+        font-size: 12px;
+        font-weight: 800;
+      }
+
+      .card-foot .lockup span { color: #595f5d; }
+      .card-foot .lockup b { color: var(--teal); font-weight: 800; }
+      .card-foot svg { display: block; }
+
+      /* CTA */
+      .cta { margin-top: 40px; text-align: center; }
+
+      .cta-copy {
+        font-size: 16.5px;
+        font-weight: 600;
+        color: var(--mint);
+        line-height: 1.5;
+      }
+
+      .badge {
+        display: inline-block;
+        margin-top: 18px;
+        transition: transform 160ms ease;
+      }
+
+      .badge:hover { transform: translateY(-2px); }
+      .badge img { height: 52px; display: block; }
+
+      .cta-note {
+        margin-top: 16px;
+        font-size: 13.5px;
+        font-weight: 500;
+        color: var(--dim);
+        line-height: 1.5;
+      }
+
+      .cta-note b { color: var(--muted); font-weight: 700; }
+
+      /* Footer */
+      .foot {
+        margin-top: 64px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        font-size: 12.5px;
+        color: var(--dim);
+      }
+
+      .foot a { color: var(--dim); text-decoration: none; }
+      .foot a:hover { color: var(--mint); }
+      .foot nav { display: flex; gap: 16px; }
+
+      /* Load choreography */
+      .reveal {
+        opacity: 0;
+        transform: translateY(14px);
+        animation: rise 640ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+        animation-delay: var(--d, 0ms);
+      }
+
+      .mascot.reveal {
+        transform: translateY(10px) scale(0.72) rotate(-8deg);
+        animation-name: pop;
+        animation-duration: 720ms;
+      }
+
+      @keyframes rise {
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      @keyframes pop {
+        60% { opacity: 1; transform: translateY(-4px) scale(1.05) rotate(2deg); }
+        100% { opacity: 1; transform: translateY(0) scale(1) rotate(0deg); }
+      }
+
+      .row.reveal { animation-duration: 460ms; }
+
+      @media (prefers-reduced-motion: reduce) {
+        .reveal, .mascot.reveal { animation: none; opacity: 1; transform: none; }
+        .badge, .badge:hover { transition: none; transform: none; }
+      }
+
+      @media (max-width: 420px) {
+        .mascot { width: 96px; height: 96px; top: -46px; }
+        .ring { width: 156px; height: 156px; top: -68px; right: -38px; }
+        .row-detail { font-size: 11.5px; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="glow" aria-hidden="true"></div>
+    <div class="grain" aria-hidden="true"></div>
+
+    <div class="page">
+      <header class="top reveal" style="--d: 0ms">
+        <a class="brand" href="/">swolie</a>
+        <a class="top-link" href="https://apps.apple.com/us/app/swolie-gym-workout-tracker/id6756705472">Get the app</a>
+      </header>
+
+      <main>
+        <span class="eyebrow reveal" style="--d: 60ms">Shared with you</span>
+        <h1 class="reveal" style="--d: 120ms" id="headline">Someone sent you a workout</h1>
+        <p class="subline reveal" style="--d: 180ms" id="subline">
+          Open it in Swolie to add it to your week — every exercise, set, and weight comes along for the ride.
+        </p>
+
+        <div class="card-zone">
+          <div class="ring reveal" style="--d: 300ms" aria-hidden="true"></div>
+          <img class="mascot reveal" style="--d: 340ms" src="/images/swolie-wave.png" alt="" width="118" height="118" />
+
+          <article class="card reveal" style="--d: 240ms" aria-label="Shared workout preview">
+            <div class="card-head">
+              <div class="mark">swolie</div>
+              <div class="card-title" id="card-title">Workout routine</div>
+              <div class="card-meta" id="card-meta">Shared from the Swolie app</div>
+            </div>
+
+            <ul class="rows" id="rows">
+              <li class="row">
+                <span class="row-num">→</span>
+                <span class="row-main"><span class="row-name">Open in Swolie to see every set</span></span>
+              </li>
+            </ul>
+
+            <div class="card-foot">
+              <span class="lockup"><span>Your Virtual </span><b>Gym Buddy</b></span>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <rect x="1" y="5.2" width="2.4" height="5.6" rx="1" fill="#2ebda8"/>
+                <rect x="12.6" y="5.2" width="2.4" height="5.6" rx="1" fill="#2ebda8"/>
+                <rect x="3.9" y="6.9" width="8.2" height="2.2" rx="1.1" fill="#2ebda8"/>
+              </svg>
+            </div>
+          </article>
+        </div>
+
+        <section class="cta reveal" style="--d: 420ms">
+          <p class="cta-copy" id="cta-copy">Grab Swolie free, then open this link again —<br />it lands straight in your Workout tab.</p>
+          <a class="badge" href="https://apps.apple.com/us/app/swolie-gym-workout-tracker/id6756705472">
+            <img src="/images/app-store-badge.svg" alt="Download on the App Store" />
+          </a>
+          <p class="cta-note"><b>Already have Swolie?</b> This link opens right in the app.</p>
+        </section>
+      </main>
+
+      <footer class="foot reveal" style="--d: 480ms">
+        <span>© <span id="year">2026</span> swolie</span>
+        <nav>
+          <a href="/privacy/">Privacy</a>
+          <a href="/terms/">Terms</a>
+        </nav>
+      </footer>
+    </div>
+
+    <script>
+      (function () {
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // ---- Payload decode --------------------------------------------------
+        // The app encodes: JSON → raw DEFLATE (NSData .zlib) → URL-safe base64.
+        // Everything below is best-effort: any failure leaves the generic page.
+
+        async function decodePayload() {
+          const raw = new URLSearchParams(location.search).get('data');
+          if (!raw || typeof DecompressionStream === 'undefined') return null;
+          try {
+            let b64 = raw.replace(/-/g, '+').replace(/_/g, '/');
+            while (b64.length % 4) b64 += '=';
+            const bytes = Uint8Array.from(atob(b64), function (c) { return c.charCodeAt(0); });
+            const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+            const json = await new Response(stream).text();
+            return JSON.parse(json);
+          } catch (e) {
+            return null;
+          }
+        }
+
+        // ---- Formatting (mirrors the app's share card, simplified) -----------
+
+        function fmtNum(n) {
+          return Number.isInteger(n) ? String(n) : n.toFixed(1);
+        }
+
+        function fmtDuration(totalSeconds) {
+          const m = Math.floor(totalSeconds / 60);
+          const s = totalSeconds % 60;
+          return m + ':' + String(s).padStart(2, '0');
+        }
+
+        function detailFor(sets) {
+          if (!Array.isArray(sets) || sets.length === 0) return '';
+          const n = sets.length;
+          const reps = sets.map(function (s) { return s.reps || 0; }).filter(function (r) { return r > 0; });
+          const weight = Math.max.apply(null, sets.map(function (s) { return s.weight || 0; }));
+          const duration = Math.max.apply(null, sets.map(function (s) { return s.duration || 0; }));
+          const distance = Math.max.apply(null, sets.map(function (s) { return s.distance || 0; }));
+
+          const parts = [];
+          if (reps.length) {
+            const lo = Math.min.apply(null, reps);
+            const hi = Math.max.apply(null, reps);
+            parts.push(n + ' × ' + (lo === hi ? lo : lo + '–' + hi));
+          } else if (duration > 0) {
+            parts.push(n + ' × ' + fmtDuration(duration));
+          } else {
+            parts.push(n + ' set' + (n === 1 ? '' : 's'));
+          }
+          if (weight > 0) parts.push(fmtNum(weight) + ' lbs');
+          if (distance > 0) parts.push(fmtNum(distance) + ' mi');
+          return parts.join(' · ');
+        }
+
+        // ---- Rendering (payload text only ever lands via textContent) --------
+
+        const MAX_ROWS = 8;
+
+        function makeRow(index, name, alt, detail) {
+          const li = document.createElement('li');
+          li.className = 'row reveal';
+          li.style.setProperty('--d', (300 + index * 55) + 'ms');
+
+          const num = document.createElement('span');
+          num.className = 'row-num';
+          num.textContent = String(index + 1);
+
+          const main = document.createElement('span');
+          main.className = 'row-main';
+          const nameEl = document.createElement('span');
+          nameEl.className = 'row-name';
+          nameEl.textContent = name;
+          main.appendChild(nameEl);
+          if (alt) {
+            const altEl = document.createElement('span');
+            altEl.className = 'row-alt';
+            altEl.textContent = 'or ' + alt;
+            altEl.style.display = 'block';
+            main.appendChild(altEl);
+          }
+
+          li.appendChild(num);
+          li.appendChild(main);
+
+          if (detail) {
+            const detailEl = document.createElement('span');
+            detailEl.className = 'row-detail';
+            detailEl.textContent = detail;
+            li.appendChild(detailEl);
+          }
+          return li;
+        }
+
+        function makeMoreRow(count) {
+          const li = document.createElement('li');
+          li.className = 'row more reveal';
+          li.style.setProperty('--d', (300 + MAX_ROWS * 55) + 'ms');
+          const num = document.createElement('span');
+          num.className = 'row-num';
+          num.textContent = '+';
+          const main = document.createElement('span');
+          main.className = 'row-main';
+          const nameEl = document.createElement('span');
+          nameEl.className = 'row-name';
+          nameEl.textContent = count + ' more in the app';
+          main.appendChild(nameEl);
+          li.appendChild(num);
+          li.appendChild(main);
+          return li;
+        }
+
+        function setText(id, text) {
+          document.getElementById(id).textContent = text;
+        }
+
+        function personalizeHeadline(name) {
+          const h1 = document.getElementById('headline');
+          h1.textContent = 'Someone sent you ';
+          const em = document.createElement('span');
+          em.className = 'routine-name';
+          em.textContent = '“' + name + '”';
+          h1.appendChild(em);
+        }
+
+        function renderRoutine(routine) {
+          const name = routine.name || 'Workout routine';
+          const exercises = (routine.exercises || []).slice().sort(function (a, b) {
+            return (a.order || 0) - (b.order || 0);
+          });
+          const setCount = exercises.reduce(function (sum, ex) {
+            return sum + ((ex.sets && ex.sets.length) || 0);
+          }, 0);
+
+          personalizeHeadline(name);
+          setText('card-title', name);
+          const metaParts = [exercises.length + ' exercise' + (exercises.length === 1 ? '' : 's')];
+          if (setCount > 0) metaParts.push(setCount + ' set' + (setCount === 1 ? '' : 's'));
+          setText('card-meta', metaParts.join(' · '));
+
+          const rows = document.getElementById('rows');
+          rows.textContent = '';
+          exercises.slice(0, MAX_ROWS).forEach(function (ex, i) {
+            const alt = (ex.alternateExerciseNames || []).join(' · ');
+            rows.appendChild(makeRow(i, ex.exerciseName || 'Exercise', alt, detailFor(ex.sets)));
+          });
+          if (exercises.length > MAX_ROWS) {
+            rows.appendChild(makeMoreRow(exercises.length - MAX_ROWS));
+          }
+        }
+
+        function renderProgram(program, routines) {
+          const name = program.name || 'Training program';
+          personalizeHeadline(name);
+          setText('card-title', name);
+
+          const referenced = routines || [];
+          const metaParts = [];
+          metaParts.push(program.durationWeeks ? program.durationWeeks + '-week plan' : 'Ongoing plan');
+          if (referenced.length) metaParts.push(referenced.length + ' routine' + (referenced.length === 1 ? '' : 's'));
+          setText('card-meta', metaParts.join(' · '));
+          setText('subline', 'A full training plan — open it in Swolie and every routine inside comes with it.');
+
+          const rows = document.getElementById('rows');
+          rows.textContent = '';
+          referenced.slice(0, MAX_ROWS).forEach(function (r, i) {
+            const count = (r.exercises || []).length;
+            rows.appendChild(makeRow(i, r.name || 'Routine', '', count ? count + ' exercise' + (count === 1 ? '' : 's') : ''));
+          });
+          if (referenced.length > MAX_ROWS) {
+            rows.appendChild(makeMoreRow(referenced.length - MAX_ROWS));
+          }
+        }
+
+        function renderFriend(friend) {
+          const name = friend.displayName || 'A friend';
+          const h1 = document.getElementById('headline');
+          h1.textContent = '';
+          const em = document.createElement('span');
+          em.className = 'routine-name';
+          em.textContent = name;
+          h1.appendChild(em);
+          h1.appendChild(document.createTextNode(' wants to be gym buddies'));
+
+          setText('subline', 'Open the invite in Swolie to connect and cheer each other on.');
+          setText('card-title', 'Gym buddy invite');
+          setText('card-meta', 'From ' + name);
+          setText('cta-copy', 'Grab Swolie free, then open this link again to connect.');
+        }
+
+        decodePayload().then(function (item) {
+          if (!item || typeof item !== 'object') return;
+          try {
+            if (item.type === 'routine' && item.routine) renderRoutine(item.routine);
+            else if (item.type === 'program' && item.program) renderProgram(item.program, item.routines);
+            else if (item.type === 'friend' && item.friend) renderFriend(item.friend);
+          } catch (e) {
+            /* generic page stays */
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>
