@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#0a0e0d" />
     <title>Shared workout · swolie</title>
-    <meta name="description" content="Someone sent you a Swolie workout. Open it in the app to add it to your week — free for iPhone and Apple Watch." />
+    <meta name="description" content="Someone sent you a Swolie workout. Open it in the app to add it to your week. Free for iPhone and Apple Watch." />
 
     <!-- Brand typography (same families as the main site) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -17,13 +17,13 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/images/appicon-light.png" />
     <meta name="apple-mobile-web-app-title" content="swolie" />
 
-    <!-- Open Graph / Social — crawlers don't run JS, so this stays generic.
+    <!-- Open Graph / Social: crawlers don't run JS, so this stays generic.
          The mascot card lives at /images/og-share.png (1200×630). -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="swolie" />
     <meta property="og:url" content="https://swolie.com/share" />
     <meta property="og:title" content="Someone sent you a Swolie workout" />
-    <meta property="og:description" content="Open it in Swolie to add it to your week — free for iPhone and Apple Watch." />
+    <meta property="og:description" content="Open it in Swolie to add it to your week. Free for iPhone and Apple Watch." />
     <meta property="og:image" content="https://swolie.com/images/og-share.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -31,7 +31,7 @@
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Someone sent you a Swolie workout" />
-    <meta name="twitter:description" content="Open it in Swolie to add it to your week — free for iPhone and Apple Watch." />
+    <meta name="twitter:description" content="Open it in Swolie to add it to your week. Free for iPhone and Apple Watch." />
     <meta name="twitter:image" content="https://swolie.com/images/og-share.png" />
 
     <style>
@@ -380,7 +380,7 @@
         <span class="eyebrow reveal" style="--d: 60ms">Shared with you</span>
         <h1 class="reveal" style="--d: 120ms" id="headline">Someone sent you a workout</h1>
         <p class="subline reveal" style="--d: 180ms" id="subline">
-          Open it in Swolie to add it to your week — every exercise, set, and weight comes along for the ride.
+          Open it in Swolie to add it to your week. Every exercise, set, and weight comes along for the ride.
         </p>
 
         <div class="card-zone">
@@ -413,7 +413,7 @@
         </div>
 
         <section class="cta reveal" style="--d: 420ms">
-          <p class="cta-copy" id="cta-copy">Grab Swolie free, then open this link again —<br />it lands straight in your Workout tab.</p>
+          <p class="cta-copy" id="cta-copy">Grab Swolie free, then open this link again.<br />It lands straight in your Workout tab.</p>
           <a class="badge" href="https://apps.apple.com/us/app/swolie-gym-workout-tracker/id6756705472">
             <img src="/images/app-store-badge.svg" alt="Download on the App Store" />
           </a>
@@ -594,7 +594,7 @@
           metaParts.push(program.durationWeeks ? program.durationWeeks + '-week plan' : 'Ongoing plan');
           if (referenced.length) metaParts.push(referenced.length + ' routine' + (referenced.length === 1 ? '' : 's'));
           setText('card-meta', metaParts.join(' · '));
-          setText('subline', 'A full training plan — open it in Swolie and every routine inside comes with it.');
+          setText('subline', 'A full training plan. Open it in Swolie and every routine inside comes with it.');
 
           const rows = document.getElementById('rows');
           rows.textContent = '';
