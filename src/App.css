@@ -258,6 +258,7 @@ button { font: inherit; }
 .callout-plan-1 { width: min(420px, 36vw); left: -10%; bottom: 10%; rotate: 3deg; }
 .sticker-plan { right: 2%; top: 13%; rotate: 10deg; }
 .callout-log-0 { width: min(460px, 40vw); left: -20%; top: 22%; rotate: -5deg; border-color: var(--lime); }
+.callout-log-1 { width: min(470px, 41vw); left: -14%; bottom: 20%; rotate: 3deg; border-color: var(--sun); }
 .sticker-log { right: 0; bottom: 12%; rotate: 8deg; }
 .sticker-recaps { right: 0; top: 14%; rotate: 8deg; }
 .recap-fan { position: absolute; width: min(210px, 18vw); border-radius: 22px; border: 5px solid #fff; box-shadow: 0 20px 40px rgba(0, 0, 0, .25); z-index: 1; }
