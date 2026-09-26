@@ -166,18 +166,15 @@ const EXTRAS = [
   { pose: 'timer', title: 'Smart rest timer', copy: 'Starts on its own. ±15s when you need it.' },
   { pose: 'overhead-press', title: 'Auto progression', copy: 'Hit your reps, get a nudge to go heavier.' },
   { pose: 'streak', title: 'Streaks & widgets', copy: 'A year of effort, one glance at your Home Screen.' },
-  { pose: 'open-book', title: '900+ exercises', copy: 'Demos, muscle maps and your full history.' },
+  { pose: 'open-book', title: '900+ exercises', copy: 'Demos and muscle maps for every one, plus your own custom exercises.' },
 ]
 
+// A hand-picked sample of swolie's poses (the full set keeps growing)
 const POSES = [
-  'wave', 'double-flex', 'lifting', 'cheer', 'pr', 'trophy', 'streak', 'superhero', 'victory-dance', 'lets-go',
-  'meditate', 'hydrate', 'run', 'swim', 'cycle', 'jump-rope', 'deadlift', 'bench-press', 'squat', 'pullup',
-  'kettlebell', 'dumbbell-curl', 'overhead-press', 'plank', 'lunge', 'stretch', 'foam-roll', 'resting', 'cozy-rest', 'sleepy-alarm',
-  'night-owl', 'early-bird', 'game-face', 'crushing', 'heavy-haul', 'fist-bump', 'megaphone', 'mind-blown', 'think', 'magnify',
-  'binoculars', 'camera', 'photo-frame', 'clipboard', 'graduate', 'medal', 'gift', 'birthday', 'map-flag', 'finish-line',
-  'comeback', 'small-step', 'bandage', 'sad-rain', 'missed', 'streak-risk', 'towel', 'timer', 'watch', 'proud',
-  'ready', 'looking', 'between-sets', 'balance-scale', 'resistance-band', 'seated-row', 'dip', 'shrug', 'open-book', 'empty-box',
-  '7day', '14day', '30day', '60day', '90day', '100day', '200day', '365day', 'crushing-small',
+  'wave', 'double-flex', 'lifting', 'cheer', 'pr', 'trophy', 'streak', 'superhero',
+  'victory-dance', 'meditate', 'hydrate', 'run', 'swim', 'deadlift', 'bench-press', 'pullup',
+  'kettlebell', 'plank', 'stretch', 'cozy-rest', 'night-owl', 'early-bird', 'game-face', 'fist-bump',
+  'megaphone', 'mind-blown', 'think', 'camera', 'graduate', 'birthday', 'comeback', 'sad-rain',
 ]
 
 const RECAP_REEL = ['10-recap-1', '11-recap-2', '12-recap-3', '13-recap-4']
@@ -487,9 +484,9 @@ function Moods() {
       <div className="shell">
         <div className="section-head center" data-reveal>
           <p className="pill-label">Meet swolie</p>
-          <h2 className="display">One buddy.<br /><span className="accent">{POSES.length}</span> moods.</h2>
+          <h2 className="display">One buddy.<br /><span className="accent">Every</span> mood.</h2>
           <p className="section-copy">Ready days, rest days, rough days and record days. swolie shows up for all of
-            them. Tap one to say hi.</p>
+            them, and there are always new ones on the way. Tap one to say hi.</p>
         </div>
         <div className="mood-wall" data-reveal>
           {POSES.map((p, i) => (
