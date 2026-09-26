@@ -1,380 +1,571 @@
+import { useEffect, useRef, useState } from 'react'
 import './App.css'
 
 const APP_STORE_URL = 'https://apps.apple.com/us/app/swolie-gym-workout-tracker/id6756705472'
-const image = (name) => `${import.meta.env.BASE_URL}images/${name}`
+const base = import.meta.env.BASE_URL
+const pose = (name) => `${base}poses/swolie-${name}.webp`
+const shot = (name) => `${base}shots/${name}.webp`
+const media = (name) => `${base}media/${name}`
 
-const weekDays = [
-  { day: 'S', date: '4', state: 'rest', label: 'Rest day' },
-  { day: 'M', date: '5', state: 'done', label: 'Workout complete' },
-  { day: 'T', date: '6', state: 'rest', label: 'Rest day' },
-  { day: 'W', date: '7', state: 'today', label: 'Workout today' },
-  { day: 'T', date: '8', state: 'planned', label: 'Workout planned' },
-  { day: 'F', date: '9', state: 'rest', label: 'Rest day' },
-  { day: 'S', date: '10', state: 'planned', label: 'Workout planned' },
-]
+const reducedMotion = () =>
+  typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
 
-const schedule = [
-  { day: 'MON', date: '05', title: 'Upper body', meta: '6 exercises · 52 min', state: 'complete' },
-  { day: 'TUE', date: '06', title: 'Rest day', meta: 'Recovery is part of the plan', state: 'rest' },
-  { day: 'WED', date: '07', title: 'Lower body', meta: '5 exercises · ~48 min', state: 'today' },
-  { day: 'THU', date: '08', title: 'Rest day', meta: 'Your schedule stays flexible', state: 'rest' },
-]
+// ---------------------------------------------------------------------------
+// Scroll plumbing: one rAF loop writes --p (0..1) onto every [data-scroll]
+// element so CSS can drive the scroll animations without React re-renders.
+//   data-scroll="through" -> 0 when the element enters, 1 when it leaves
+//   data-scroll="sticky"  -> 0 at the top of a tall section, 1 at its end
+// ---------------------------------------------------------------------------
+function useScrollVars() {
+  useEffect(() => {
+    let frame = 0
+    const update = () => {
+      frame = 0
+      const vh = window.innerHeight
+      document.querySelectorAll('[data-scroll]').forEach((el) => {
+        const r = el.getBoundingClientRect()
+        const p = el.dataset.scroll === 'sticky'
+          ? -r.top / Math.max(1, r.height - vh)
+          : (vh - r.top) / (vh + r.height)
+        el.style.setProperty('--p', Math.min(1, Math.max(0, p)).toFixed(4))
+      })
+      document.documentElement.classList.toggle('scrolled', window.scrollY > 40)
+    }
+    const request = () => { if (!frame) frame = requestAnimationFrame(update) }
+    update()
+    window.addEventListener('scroll', request, { passive: true })
+    window.addEventListener('resize', request)
+    return () => {
+      window.removeEventListener('scroll', request)
+      window.removeEventListener('resize', request)
+      cancelAnimationFrame(frame)
+    }
+  }, [])
+}
 
-const mascotMoments = [
-  { src: 'swolie-ready.png', label: 'Workout day', alt: 'Swolie is ready to train' },
-  { src: 'swolie-stretch.png', label: 'Warm-up', alt: 'Swolie stretches before a workout' },
-  { src: 'swolie-hydrate.png', label: 'Recovery', alt: 'Swolie takes a hydration break' },
-  { src: 'swolie-cheer.png', label: 'Big win', alt: 'Swolie celebrates a completed workout' },
-  { src: 'swolie-trophy.png', label: 'Milestone', alt: 'Swolie holds a trophy for a milestone' },
-]
+// Adds .in to [data-reveal] elements the first time they enter the viewport
+function useReveal() {
+  useEffect(() => {
+    const els = document.querySelectorAll('[data-reveal]')
+    if (reducedMotion()) { els.forEach((el) => el.classList.add('in')); return }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target) }
+      })
+    }, { threshold: 0.18, rootMargin: '0px 0px -8% 0px' })
+    els.forEach((el) => io.observe(el))
+    return () => io.disconnect()
+  }, [])
+}
 
-function AppStoreBadge() {
+// Muted looping clip that only plays while on screen
+function Clip({ src, poster, label, className = '', videoRef }) {
+  const local = useRef(null)
+  const ref = videoRef ?? local
+  useEffect(() => {
+    const v = ref.current
+    if (!v) return
+    if (reducedMotion()) return
+    const io = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) v.play().catch(() => {})
+      else v.pause()
+    }, { threshold: 0.25 })
+    io.observe(v)
+    return () => io.disconnect()
+  }, [ref])
   return (
-    <a
-      href={APP_STORE_URL}
-      className="app-store-link"
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label="Download Swolie on the App Store"
-    >
-      <img src={image('app-store-badge.svg')} alt="Download on the App Store" />
-    </a>
+    <video
+      ref={ref}
+      className={className}
+      src={src}
+      poster={poster}
+      muted
+      loop
+      playsInline
+      preload="metadata"
+      aria-label={label}
+    />
   )
 }
 
-function App() {
+function Phone({ clip, poster, label, className = '', style }) {
   return (
-    <div className="page">
-      <a className="skip-link" href="#main">Skip to content</a>
-
-      <div className="site-backdrop" aria-hidden="true">
-        <div className="backdrop-grid" />
-        <div className="backdrop-glow backdrop-glow-one" />
-        <div className="backdrop-glow backdrop-glow-two" />
+    <div className={`phone ${className}`} style={style}>
+      <div className="phone-screen">
+        {clip
+          ? <Clip src={clip} poster={poster} label={label} />
+          : <img src={poster} alt={label} loading="lazy" />}
       </div>
-
-      <header className="nav-shell">
-        <nav className="nav" aria-label="Primary navigation">
-          <a className="brand-lockup" href="#top" aria-label="swolie home">
-            <img src={image('appicon-light.png')} alt="" aria-hidden="true" />
-            <span className="wordmark">swolie</span>
-          </a>
-
-          <div className="nav-links">
-            <a href="#your-week">Your week</a>
-            <a href="#features">Features</a>
-            <a href="#meet-swolie">Meet Swolie</a>
-          </div>
-
-          <a
-            href={APP_STORE_URL}
-            className="button button-small"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Get the app
-            <span aria-hidden="true">↗</span>
-          </a>
-        </nav>
-      </header>
-
-      <main id="main">
-        <section className="hero section-shell" id="top">
-          <div className="hero-copy">
-            <p className="eyebrow"><span /> Your Virtual Gym Buddy</p>
-            <h1>
-              A tracker that feels like a <span>spotter.</span>
-            </h1>
-            <p className="hero-lede">
-              Build a plan around your real week, log every set without slowing down,
-              and let Swolie keep the next step obvious.
-            </p>
-
-            <div className="hero-actions">
-              <AppStoreBadge />
-              <a className="text-link" href="#features">
-                See what it tracks <span aria-hidden="true">↓</span>
-              </a>
-            </div>
-
-            <div className="hero-notes" aria-label="Product availability">
-              <span><i aria-hidden="true" /> Built for iPhone</span>
-              <span><i aria-hidden="true" /> Apple Watch companion</span>
-            </div>
-          </div>
-
-          <div className="hero-stage" aria-label="Preview of the Swolie app home screen">
-            <div className="hero-stage-copy" aria-hidden="true">
-              <span>small buddy.</span>
-              <strong>big gains.</strong>
-            </div>
-
-            <div className="phone-shadow" aria-hidden="true" />
-            <div className="phone-frame">
-              <div className="phone-screen">
-                <div className="phone-status" aria-hidden="true">
-                  <span>9:41</span>
-                  <span className="dynamic-island" />
-                  <span>●●●</span>
-                </div>
-
-                <div className="phone-heading">
-                  <span>Home</span>
-                  <span className="settings-dot" aria-hidden="true">•</span>
-                </div>
-
-                <div className="week-card">
-                  <div className="week-card-top">
-                    <span>This Week</span>
-                    <strong>3-day streak</strong>
-                  </div>
-                  <div className="week-row">
-                    {weekDays.map((item, index) => (
-                      <div className={`week-day ${item.state}`} key={`${item.day}-${index}`}>
-                        <span aria-label={item.label}>{item.state === 'done' ? '✓' : item.day}</span>
-                        <small>{item.date}</small>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="week-stats">
-                    <div><strong>44.0k <small>lbs</small></strong><span>last 3 months</span></div>
-                    <div><strong>3</strong><span>workouts</span></div>
-                    <div><strong className="amber">51</strong><span>sets</span></div>
-                  </div>
-                </div>
-
-                <div className="phone-mascot">
-                  <div className="mascot-glow" aria-hidden="true" />
-                  <img src={image('swolie-ready.png')} alt="Swolie is ready for today's workout" />
-                  <strong>Swolie</strong>
-                  <span>“Let’s get after it!”</span>
-                </div>
-
-                <div className="start-workout"><span aria-hidden="true">▶</span> Start Workout</div>
-              </div>
-            </div>
-
-            <div className="hero-buddy">
-              <div className="speech-bubble">I’ve got your next set.</div>
-              <img src={image('swolie-wave.png')} alt="Swolie waves hello" />
-            </div>
-
-            <div className="rest-chip">
-              <img src={image('swolie-meditate.png')} alt="" aria-hidden="true" />
-              <span><small>Tomorrow</small>Rest day</span>
-            </div>
-          </div>
-        </section>
-
-        <section className="signal-strip" aria-label="Swolie features">
-          <div>
-            <span>Guided programs</span><i />
-            <span>Fast workout logging</span><i />
-            <span>Rest-day scheduling</span><i />
-            <span>Progress you can see</span><i />
-            <span>Apple Watch ready</span>
-          </div>
-        </section>
-
-        <section className="week-section section-shell" id="your-week">
-          <div className="section-copy">
-            <p className="section-kicker">TRAIN YOUR WAY</p>
-            <h2>Your plan should fit your week. Not fight it.</h2>
-            <p>
-              Choose how often you train, pick the days that actually work, and Swolie
-              maps the right routine to each one. Your rest days stay visible, intentional,
-              and easy to change.
-            </p>
-            <ul className="check-list">
-              <li>3-, 4-, and 6-day guided programs</li>
-              <li>Flexible training when every week is different</li>
-              <li>Independent weight and distance units</li>
-            </ul>
-          </div>
-
-          <div className="schedule-stage">
-            <div className="schedule-card">
-              <div className="schedule-header">
-                <div>
-                  <span>YOUR PROGRAM</span>
-                  <h3>Upper / Lower</h3>
-                </div>
-                <span className="week-pill">Week 3 of 8</span>
-              </div>
-
-              <div className="schedule-list">
-                {schedule.map((item) => (
-                  <div className={`schedule-row ${item.state}`} key={item.date}>
-                    <div className="date-tile"><span>{item.day}</span><strong>{item.date}</strong></div>
-                    <div className="schedule-detail"><strong>{item.title}</strong><span>{item.meta}</span></div>
-                    <div className="schedule-status" aria-hidden="true">
-                      {item.state === 'complete' ? '✓' : item.state === 'today' ? 'Start' : '—'}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <img
-              className="schedule-mascot"
-              src={image('swolie-clipboard.png')}
-              alt="Swolie holds the weekly training plan"
-            />
-          </div>
-        </section>
-
-        <section className="feature-section section-shell" id="features">
-          <div className="section-heading">
-            <div>
-              <p className="section-kicker">EVERYTHING BETWEEN START AND STRONGER</p>
-              <h2>Serious tracking.<br />Zero spreadsheet energy.</h2>
-            </div>
-            <p>
-              The detail lifters want, organized so the next action is always the easiest one.
-            </p>
-          </div>
-
-          <div className="bento-grid">
-            <article className="feature-card feature-card-log">
-              <div className="feature-number">01</div>
-              <div className="feature-copy">
-                <span className="feature-label">WORKOUTS</span>
-                <h3>Log the set.<br />Keep the flow.</h3>
-                <p>Weight, reps, notes, supersets, rest timers, and previous performance stay right where you need them.</p>
-              </div>
-              <div className="set-table" aria-label="Example workout log">
-                <div className="set-table-head"><span>SET</span><span>LBS</span><span>REPS</span><span /></div>
-                <div><span>1</span><strong>185</strong><strong>8</strong><i>✓</i></div>
-                <div><span>2</span><strong>185</strong><strong>8</strong><i>✓</i></div>
-                <div className="set-current"><span>3</span><strong>190</strong><strong>6</strong><i /></div>
-              </div>
-              <img src={image('swolie-lifting.png')} alt="Swolie lifts a barbell" />
-            </article>
-
-            <article className="feature-card feature-card-progress">
-              <div className="feature-number">02</div>
-              <span className="feature-label">PROGRESS</span>
-              <h3>See strength climb.</h3>
-              <p>Personal records, volume, streaks, and trends update as you train.</p>
-              <div className="chart" aria-label="Example upward training volume chart">
-                {[31, 44, 38, 57, 66, 84].map((height, index) => (
-                  <span style={{ '--bar-height': `${height}%` }} key={index} />
-                ))}
-              </div>
-              <div className="chart-footer"><span>12 weeks</span><strong>+18%</strong></div>
-            </article>
-
-            <article className="feature-card feature-card-watch">
-              <div className="feature-number">03</div>
-              <span className="feature-label">APPLE WATCH</span>
-              <h3>Your workout, on your wrist.</h3>
-              <p>Move through exercises and keep your phone out of the way.</p>
-              <img src={image('swolie-watch.png')} alt="Swolie checks a workout on Apple Watch" />
-            </article>
-
-            <article className="feature-card feature-card-health">
-              <div className="feature-number">04</div>
-              <span className="feature-label">ACTIVITY</span>
-              <h3>Lifting and cardio, together.</h3>
-              <p>Bring supported Health workouts into the same activity history as your strength sessions.</p>
-              <div className="run-stats" aria-label="Example run stats">
-                <div><strong>3.1</strong><span>MILES</span></div>
-                <div><strong>28:42</strong><span>TIME</span></div>
-              </div>
-              <img src={image('swolie-run.png')} alt="Swolie runs alongside imported cardio activity" />
-            </article>
-
-            <article className="feature-card feature-card-photos">
-              <div className="feature-number">05</div>
-              <span className="feature-label">PROGRESS PHOTOS</span>
-              <h3>Make progress visible.</h3>
-              <p>Capture consistent check-ins and compare changes without leaving the app.</p>
-              <div className="photo-stack" aria-hidden="true"><span /><span /><span /></div>
-              <img src={image('swolie-camera.png')} alt="Swolie takes a progress photo" />
-            </article>
-
-            <article className="feature-card feature-card-recovery">
-              <div className="feature-number">06</div>
-              <span className="feature-label">REST &amp; PROGRESSION</span>
-              <h3>Push when it counts. Recover when it helps.</h3>
-              <p>Set your default timer and choose whether Swolie suggests the next weight increase.</p>
-              <div className="timer-pill"><span>REST TIMER</span><strong>1:24</strong></div>
-              <img src={image('swolie-hydrate.png')} alt="Swolie hydrates during a rest period" />
-            </article>
-          </div>
-        </section>
-
-        <section className="mascot-section" id="meet-swolie">
-          <div className="section-shell">
-            <div className="mascot-heading">
-              <div>
-                <p className="section-kicker">A BUDDY THAT READS THE ROOM</p>
-                <h2>Every moment.<br />One Swolie.</h2>
-              </div>
-              <p>
-                Ready days, rest days, rough days, and record days all feel different.
-                Swolie does too.
-              </p>
-            </div>
-
-            <div className="mascot-grid">
-              {mascotMoments.map((moment) => (
-                <div className="mascot-card" key={moment.label}>
-                  <span>{moment.label}</span>
-                  <img src={image(moment.src)} alt={moment.alt} loading="lazy" />
-                </div>
-              ))}
-            </div>
-
-            <p className="mascot-quote">“Whatever today looks like, we’ll take the next step together.”</p>
-          </div>
-        </section>
-
-        <section className="final-cta section-shell">
-          <div className="cta-panel">
-            <div className="cta-copy">
-              <p className="section-kicker">READY WHEN YOU ARE</p>
-              <h2>Your next set<br />starts here.</h2>
-              <p>Build your week, meet your gym buddy, and make every workout count.</p>
-              <AppStoreBadge />
-            </div>
-            <div className="cta-art">
-              <div className="cta-ring" aria-hidden="true" />
-              <img src={image('swolie-superhero.png')} alt="Swolie stands confidently in a superhero cape" loading="lazy" />
-              <span className="wordmark">swolie</span>
-            </div>
-          </div>
-        </section>
-
-        <section className="support section-shell" aria-labelledby="support-title">
-          <div>
-            <p className="section-kicker">NEED A SPOT?</p>
-            <h2 id="support-title">We’re here to help.</h2>
-          </div>
-          <a href="mailto:support@swolie.com">support@swolie.com <span aria-hidden="true">↗</span></a>
-        </section>
-      </main>
-
-      <footer className="footer">
-        <div className="section-shell footer-main">
-          <a className="brand-lockup" href="#top" aria-label="Back to the top">
-            <img src={image('appicon-light.png')} alt="" aria-hidden="true" />
-            <span className="wordmark">swolie</span>
-          </a>
-          <p>Your Virtual Gym Buddy</p>
-          <div className="footer-links">
-            <a href="/privacy/index.html">Privacy</a>
-            <a href="/terms/index.html">Terms</a>
-            <a href="mailto:support@swolie.com">Support</a>
-          </div>
-        </div>
-        <div className="section-shell footer-bottom">
-          <span>© {new Date().getFullYear()} swolie</span>
-          <span>Made for the next set.</span>
-        </div>
-      </footer>
     </div>
   )
 }
 
-export default App
+function Sticker({ name, alt = '', className = '', style }) {
+  return <img className={`sticker ${className}`} src={pose(name)} alt={alt} style={style} loading="lazy" draggable="false" />
+}
+
+function Burst({ points = 16, inner = 0.74, className = '', style }) {
+  const pts = []
+  for (let i = 0; i < points * 2; i++) {
+    const r = i % 2 === 0 ? 100 : 100 * inner
+    const a = (Math.PI * i) / points - Math.PI / 2
+    pts.push(`${(r * Math.cos(a)).toFixed(2)},${(r * Math.sin(a)).toFixed(2)}`)
+  }
+  return (
+    <svg className={`burst ${className}`} style={style} viewBox="-100 -100 200 200" aria-hidden="true">
+      <polygon points={pts.join(' ')} />
+    </svg>
+  )
+}
+
+function AppStoreBadge({ className = '' }) {
+  return (
+    <a href={APP_STORE_URL} className={`store-badge ${className}`} target="_blank" rel="noopener noreferrer"
+      aria-label="Download swolie on the App Store">
+      <img src={`${base}images/app-store-badge.svg`} alt="Download on the App Store" />
+    </a>
+  )
+}
+
+// ---------------------------------------------------------------------------
+
+const MARQUEE_A = ['log sets in one tap', 'plans that fit your week', 'weekly wrapped recaps', 'apple watch', 'live activities', 'streak widgets']
+const MARQUEE_B = ['level up', 'new PR', 'rest timer', 'muscle map', 'progress photos', 'cardio from health']
+const MARQUEE_POSES = ['wave', 'lifting', 'cheer', 'pr', 'streak', 'trophy']
+
+const CHAPTERS = [
+  {
+    id: 'plan', theme: 'sun', eyebrow: 'Your plan', title: ['Always know', "what's next."],
+    copy: 'Pick your days and swolie builds the week around them. Open the app and today\'s workout is already waiting, with every exercise, set and rep laid out.',
+    points: ['3, 4 and 6-day plans, or train flexibly', 'Rest days that stay rest days', 'Swap a workout when life happens'],
+    clip: 'app-plan', sticker: 'clipboard', callouts: ['today-plan', 'today-list'],
+  },
+  {
+    id: 'log', theme: 'ink', eyebrow: 'Logging', title: ['Log a set.', 'One tap.'],
+    copy: 'Last session\'s numbers are already filled in. Tap the check, the rest timer starts itself, and swolie tells you when you\'ve earned a heavier weight.',
+    points: ['Automatic rest timer', 'Level Up nudges when you hit your reps', 'Instant PR celebrations'],
+    clip: 'app-log', sticker: 'lifting', callouts: ['levelup'],
+  },
+  {
+    id: 'recaps', theme: 'cream', eyebrow: 'Recaps', title: ['Your week,', 'Wrapped.'],
+    copy: 'Every week, month and year turns into a story you actually want to post. Big numbers, funny comparisons, zero spreadsheets.',
+    points: ['Weekly, monthly and yearly stories', 'Made to share on Instagram', 'Never shows your exact weights'],
+    clip: 'app-recap', sticker: 'cheer', callouts: [],
+  },
+  {
+    id: 'gains', theme: 'coral', eyebrow: 'Progress', title: ['Watch the', 'gains stack.'],
+    copy: 'Plan progress, personal records, top gainers and week-by-week volume. See exactly how far you\'ve come since week one.',
+    points: ['PRs and top gainers', 'Volume by week, best week crowned', 'Strength trends for every lift'],
+    clip: 'app-gains', sticker: 'trophy', callouts: ['exercise-progress'],
+  },
+]
+
+const EXTRAS = [
+  { pose: 'camera', title: 'Progress photos', copy: 'Consistent check-ins with side-by-side compares.' },
+  { pose: 'run', title: 'Cardio from Health', copy: 'Runs and rides land next to your lifts.' },
+  { pose: 'timer', title: 'Smart rest timer', copy: 'Starts on its own. ±15s when you need it.' },
+  { pose: 'overhead-press', title: 'Auto progression', copy: 'Hit your reps, get a nudge to go heavier.' },
+  { pose: 'streak', title: 'Streaks & widgets', copy: 'A year of effort, one glance at your Home Screen.' },
+  { pose: 'open-book', title: '900+ exercises', copy: 'Demos, muscle maps and your full history.' },
+]
+
+const POSES = [
+  'wave', 'double-flex', 'lifting', 'cheer', 'pr', 'trophy', 'streak', 'superhero', 'victory-dance', 'lets-go',
+  'meditate', 'hydrate', 'run', 'swim', 'cycle', 'jump-rope', 'deadlift', 'bench-press', 'squat', 'pullup',
+  'kettlebell', 'dumbbell-curl', 'overhead-press', 'plank', 'lunge', 'stretch', 'foam-roll', 'resting', 'cozy-rest', 'sleepy-alarm',
+  'night-owl', 'early-bird', 'game-face', 'crushing', 'heavy-haul', 'fist-bump', 'megaphone', 'mind-blown', 'think', 'magnify',
+  'binoculars', 'camera', 'photo-frame', 'clipboard', 'graduate', 'medal', 'gift', 'birthday', 'map-flag', 'finish-line',
+  'comeback', 'small-step', 'bandage', 'sad-rain', 'missed', 'streak-risk', 'towel', 'timer', 'watch', 'proud',
+  'ready', 'looking', 'between-sets', 'balance-scale', 'resistance-band', 'seated-row', 'dip', 'shrug', 'open-book', 'empty-box',
+  '7day', '14day', '30day', '60day', '90day', '100day', '200day', '365day', 'crushing-small',
+]
+
+const RECAP_REEL = ['10-recap-1', '11-recap-2', '12-recap-3', '13-recap-4']
+
+// ---------------------------------------------------------------------------
+
+function Nav() {
+  return (
+    <header className="nav-wrap">
+      <nav className="nav" aria-label="Primary">
+        <a className="brand" href="#top" aria-label="swolie home">
+          <img src={`${base}images/appicon-light.png`} alt="" />
+          <span>swolie</span>
+        </a>
+        <div className="nav-links">
+          <a href="#film">The film</a>
+          <a href="#features">Features</a>
+          <a href="#everywhere">Watch</a>
+          <a href="#moods">Meet swolie</a>
+        </div>
+        <a className="nav-cta" href={APP_STORE_URL} target="_blank" rel="noopener noreferrer">Get the app</a>
+      </nav>
+    </header>
+  )
+}
+
+function Hero() {
+  const ref = useRef(null)
+  useEffect(() => {
+    const el = ref.current
+    if (!el || reducedMotion()) return
+    const move = (e) => {
+      const r = el.getBoundingClientRect()
+      el.style.setProperty('--mx', ((e.clientX - r.left) / r.width - 0.5).toFixed(3))
+      el.style.setProperty('--my', ((e.clientY - r.top) / r.height - 0.5).toFixed(3))
+    }
+    el.addEventListener('pointermove', move)
+    return () => el.removeEventListener('pointermove', move)
+  }, [])
+
+  return (
+    <section className="hero" id="top" ref={ref} data-scroll="through">
+      <Burst points={18} inner={0.78} className="hero-burst" />
+      <div className="hero-grid shell">
+        <div className="hero-copy">
+          <p className="pill-label hero-label"><span className="dot" /> Now on the App Store</p>
+          <h1 className="display">
+            <span className="line">Meet your</span>
+            <span className="line">gym buddy<span className="accent">.</span></span>
+          </h1>
+          <p className="lede">
+            swolie plans your week, logs every set in a tap, and turns your progress into stories
+            worth sharing. Basically a spotter that lives in your pocket.
+          </p>
+          <div className="hero-actions">
+            <AppStoreBadge />
+            <a className="ghost-link" href="#film">
+              <span className="play">▶</span> Watch the 29-second pitch
+            </a>
+          </div>
+          <p className="hero-meta">For iPhone and Apple Watch</p>
+        </div>
+
+        <div className="hero-art" aria-label="swolie app preview">
+          <Phone className="hero-phone" clip={media('app-plan.mp4')} poster={media('app-plan.webp')}
+            label="swolie app: moving from Home to today's workout" />
+          <Sticker name="double-flex" alt="swolie flexing" className="hero-mascot" />
+          <div className="float-chip chip-streak"><Sticker name="streak" className="chip-pose" /> 15-day streak</div>
+          <div className="float-chip chip-pr">New PR <b>+5 lb</b></div>
+          <div className="float-chip chip-level">Level up ↑</div>
+        </div>
+      </div>
+      <a className="scroll-cue" href="#film" aria-label="Scroll down">
+        <Sticker name="looking" />
+      </a>
+    </section>
+  )
+}
+
+function Marquee() {
+  const row = (words, dir) => (
+    <div className={`marquee ${dir}`} aria-hidden="true">
+      <div className="marquee-track">
+        {[0, 1].map((k) => (
+          <div className="marquee-set" key={k}>
+            {words.map((w, i) => (
+              <span className="marquee-item" key={w}>
+                {w}
+                <img src={pose(MARQUEE_POSES[i % MARQUEE_POSES.length])} alt="" />
+              </span>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+  return (
+    <section className="marquees" aria-label="What swolie does">
+      <p className="sr-only">{[...MARQUEE_A, ...MARQUEE_B].join(', ')}</p>
+      {row(MARQUEE_A, 'left')}
+      {row(MARQUEE_B, 'right')}
+    </section>
+  )
+}
+
+function Film() {
+  const video = useRef(null)
+  const [muted, setMuted] = useState(true)
+  const toggle = () => {
+    const v = video.current
+    if (!v) return
+    v.muted = !v.muted
+    if (!v.muted) { v.currentTime = 0; v.play().catch(() => {}) }
+    setMuted(v.muted)
+  }
+  return (
+    <section className="film" id="film" data-scroll="sticky">
+      <div className="film-sticky">
+        <div className="film-heading">
+          <p className="pill-label">The film</p>
+          <h2 className="display">29 seconds of <span className="accent">swole.</span></h2>
+        </div>
+        <div className="film-stage">
+          <Sticker name="superhero" className="film-s film-s1" />
+          <Sticker name="megaphone" className="film-s film-s2" />
+          <Sticker name="victory-dance" className="film-s film-s3" />
+          <Sticker name="fist-bump" className="film-s film-s4" />
+          <div className="film-card">
+            <Clip videoRef={video} src={media('launch.mp4')} poster={media('launch.webp')} label="swolie launch film" />
+            <button className="sound-btn" type="button" onClick={toggle} aria-pressed={!muted}>
+              {muted ? '🔈 Tap for sound' : '🔊 Sound on'}
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function Features() {
+  const [active, setActive] = useState(0)
+  const refs = useRef([])
+  useEffect(() => {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting) setActive(Number(e.target.dataset.index)) })
+    }, { rootMargin: '-45% 0px -45% 0px' })
+    refs.current.forEach((el) => el && io.observe(el))
+    return () => io.disconnect()
+  }, [])
+  const ch = CHAPTERS[active]
+
+  return (
+    <section className={`features theme-${ch.theme}`} id="features">
+      <div className="shell features-grid">
+        <div className="chapters">
+          {CHAPTERS.map((c, i) => (
+            <article className={`chapter m-${c.theme} ${i === active ? 'is-active' : ''}`} key={c.id} data-index={i}
+              ref={(el) => { refs.current[i] = el }}>
+              <p className="pill-label">{c.eyebrow}</p>
+              <h2 className="display">{c.title[0]}<br />{c.title[1]}</h2>
+              <p className="chapter-copy">{c.copy}</p>
+              <ul className="ticks">{c.points.map((p) => <li key={p}>{p}</li>)}</ul>
+              <div className="chapter-mobile-art">
+                <Phone clip={media(`${c.clip}.mp4`)} poster={media(`${c.clip}.webp`)} label={`${c.eyebrow} in the swolie app`} />
+                <Sticker name={c.sticker} className="chapter-mobile-sticker" />
+              </div>
+            </article>
+          ))}
+        </div>
+
+        <div className="stage" aria-hidden="true">
+          <div className="stage-inner">
+            <Burst points={20} inner={0.8} className="stage-burst" />
+            {CHAPTERS.map((c, i) => (
+              <div className={`stage-layer ${i === active ? 'is-active' : ''}`} key={c.id}>
+                <Phone className="stage-phone" clip={media(`${c.clip}.mp4`)} poster={media(`${c.clip}.webp`)} label="" />
+                {c.callouts.map((name, k) => (
+                  <div className={`callout callout-${c.id}-${k}`} key={name}><img src={shot(name)} alt="" /></div>
+                ))}
+                {c.id === 'gains' && <div className="big-number">+27%</div>}
+                {c.id === 'recaps' && (
+                  <>
+                    <img className="recap-fan fan-l" src={shot('11-recap-2')} alt="" />
+                    <img className="recap-fan fan-r" src={shot('13-recap-4')} alt="" />
+                  </>
+                )}
+                <Sticker name={c.sticker} className={`stage-sticker sticker-${c.id}`} />
+              </div>
+            ))}
+            <div className="chapter-dots">
+              {CHAPTERS.map((c, i) => <span key={c.id} className={i === active ? 'on' : ''} />)}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function Everywhere() {
+  return (
+    <section className="everywhere" id="everywhere">
+      <div className="shell">
+        <div className="section-head" data-reveal>
+          <p className="pill-label">Everywhere</p>
+          <h2 className="display">Lock Screen. Wrist.<br />Home Screen. <span className="accent">Done.</span></h2>
+          <p className="section-copy">Log sets and skip rest from the Lock Screen, follow along on Apple Watch,
+            and watch your year fill in right on your Home Screen.</p>
+        </div>
+        <div className="ew-stage">
+          <figure className="ew-live" data-reveal>
+            <img src={shot('live-activity')} alt="swolie Live Activity on the Lock Screen with rest timer and next set" loading="lazy" />
+            <figcaption>Live Activity</figcaption>
+          </figure>
+          <figure className="ew-watch" data-reveal>
+            <div className="watch">
+              <div className="watch-band top" />
+              <div className="watch-band bottom" />
+              <div className="watch-case">
+                <div className="watch-screen">
+                  <img src={shot('07-watch')} alt="swolie on Apple Watch showing Hack Squat sets" loading="lazy" />
+                  <span className="watch-time">9:41</span>
+                </div>
+                <i className="watch-crown" /><i className="watch-action" />
+              </div>
+            </div>
+            <figcaption>Apple Watch</figcaption>
+          </figure>
+          <figure className="ew-widget" data-reveal>
+            <img src={shot('widget')} alt="swolie year widget showing active days" loading="lazy" />
+            <figcaption>Widgets</figcaption>
+          </figure>
+          <Sticker name="watch" className="ew-sticker" />
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function MuscleMap() {
+  return (
+    <section className="muscles" data-scroll="through">
+      <div className="shell muscles-grid">
+        <div className="muscle-art" data-reveal>
+          <div className="heat-glow" aria-hidden="true" />
+          <div className="callout muscle-figures"><img src={shot('muscle-figures')} alt="Front and back muscle heat map" loading="lazy" /></div>
+          <Sticker name="magnify" className="muscle-sticker" />
+        </div>
+        <div className="muscle-copy" data-reveal>
+          <p className="pill-label">Muscle map</p>
+          <h2 className="display">See every<br />muscle<br />you hit<span className="accent">.</span></h2>
+          <p className="section-copy">Hot spots glow. Blind spots don't hide. Every set counts toward the muscles it
+            targets directly and the ones that help out.</p>
+          <div className="callout muscle-bars"><img src={shot('muscle-bars')} alt="Sets by muscle group" loading="lazy" /></div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function Extras() {
+  return (
+    <section className="extras">
+      <div className="shell">
+        <div className="section-head" data-reveal>
+          <p className="pill-label">Also in the gym bag</p>
+          <h2 className="display">The little things<span className="accent">.</span></h2>
+        </div>
+        <div className="extras-grid">
+          {EXTRAS.map((x, i) => (
+            <article className="extra" key={x.title} data-reveal style={{ '--i': i }}>
+              <Sticker name={x.pose} className="extra-pose" />
+              <h3>{x.title}</h3>
+              <p>{x.copy}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function RecapReel() {
+  const items = [...RECAP_REEL, ...RECAP_REEL, ...RECAP_REEL]
+  return (
+    <section className="reel-section" data-scroll="through">
+      <div className="shell reel-head" data-reveal>
+        <p className="pill-label">Recaps</p>
+        <h2 className="display">Stories worth<br />posting<span className="accent">.</span></h2>
+      </div>
+      <div className="reel" aria-label="Example swolie recap stories">
+        <div className="reel-track">
+          {items.map((s, i) => (
+            <img key={i} className="reel-card" src={shot(s)} alt={i < RECAP_REEL.length ? 'swolie recap story' : ''}
+              aria-hidden={i >= RECAP_REEL.length} loading="lazy" style={{ '--r': `${(i % 2 ? 1 : -1) * (2 + (i % 3))}deg` }} />
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function Moods() {
+  const [picked, setPicked] = useState(null)
+  return (
+    <section className="moods" id="moods">
+      <div className="shell">
+        <div className="section-head center" data-reveal>
+          <p className="pill-label">Meet swolie</p>
+          <h2 className="display">One buddy.<br /><span className="accent">{POSES.length}</span> moods.</h2>
+          <p className="section-copy">Ready days, rest days, rough days and record days. swolie shows up for all of
+            them. Tap one to say hi.</p>
+        </div>
+        <div className="mood-wall" data-reveal>
+          {POSES.map((p, i) => (
+            <button type="button" key={p} className={`mood ${picked === p ? 'picked' : ''}`}
+              style={{ '--i': i, '--r': `${((i * 37) % 17) - 8}deg` }}
+              onClick={() => setPicked(p === picked ? null : p)}
+              aria-label={`swolie ${p.replace(/-/g, ' ')}`}>
+              <img src={pose(p)} alt="" loading="lazy" draggable="false" />
+              <span className="mood-name">{p.replace(/-/g, ' ')}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function FinalCta() {
+  return (
+    <section className="final" data-scroll="through">
+      <Burst points={18} inner={0.78} className="final-burst" />
+      <div className="shell final-inner" data-reveal>
+        <Sticker name="victory-dance" alt="swolie doing a victory dance" className="final-mascot" />
+        <div className="final-brand">
+          <img src={`${base}images/appicon-light.png`} alt="" />
+          <span>swolie</span>
+        </div>
+        <h2 className="display">Your next set<br />starts here.</h2>
+        <AppStoreBadge className="big" />
+        <p className="final-meta">iPhone · Apple Watch · your virtual gym buddy</p>
+      </div>
+    </section>
+  )
+}
+
+function Footer() {
+  return (
+    <footer className="footer">
+      <div className="shell footer-inner">
+        <div className="footer-brand">
+          <img src={`${base}images/appicon-light.png`} alt="" />
+          <div><strong>swolie</strong><span>Need a spot? <a href="mailto:support@swolie.com">support@swolie.com</a></span></div>
+        </div>
+        <div className="footer-links">
+          <a href="/privacy/index.html">Privacy</a>
+          <a href="/terms/index.html">Terms</a>
+          <a href="mailto:support@swolie.com">Support</a>
+        </div>
+        <p className="footer-copy">© {new Date().getFullYear()} swolie. Made for the next set.</p>
+      </div>
+      <Sticker name="resting" className="footer-sticker" />
+    </footer>
+  )
+}
+
+export default function App() {
+  useScrollVars()
+  useReveal()
+  return (
+    <div className="page">
+      <a className="skip-link" href="#main">Skip to content</a>
+      <Nav />
+      <main id="main">
+        <Hero />
+        <Marquee />
+        <Film />
+        <Features />
+        <Everywhere />
+        <MuscleMap />
+        <RecapReel />
+        <Extras />
+        <Moods />
+        <FinalCta />
+      </main>
+      <Footer />
+      <div className="grain" aria-hidden="true" />
+    </div>
+  )
+}
