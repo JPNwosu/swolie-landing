@@ -59,12 +59,12 @@ function useReveal() {
 }
 
 // Muted looping clip that only plays while on screen
-function Clip({ src, poster, label, className = '', videoRef }) {
+function Clip({ src, poster, label, className = '', videoRef, managed = false }) {
   const local = useRef(null)
   const ref = videoRef ?? local
   useEffect(() => {
     const v = ref.current
-    if (!v) return
+    if (!v || managed) return
     if (reducedMotion()) return
     const io = new IntersectionObserver(([e]) => {
       if (e.isIntersecting) v.play().catch(() => {})
@@ -72,7 +72,7 @@ function Clip({ src, poster, label, className = '', videoRef }) {
     }, { threshold: 0.25 })
     io.observe(v)
     return () => io.disconnect()
-  }, [ref])
+  }, [ref, managed])
   return (
     <video
       ref={ref}
@@ -88,12 +88,12 @@ function Clip({ src, poster, label, className = '', videoRef }) {
   )
 }
 
-function Phone({ clip, poster, label, className = '', style }) {
+function Phone({ clip, poster, label, className = '', style, managed = false }) {
   return (
     <div className={`phone ${className}`} style={style}>
       <div className="phone-screen">
         {clip
-          ? <Clip src={clip} poster={poster} label={label} />
+          ? <Clip src={clip} poster={poster} label={label} managed={managed} />
           : <img src={poster} alt={label} loading="lazy" />}
       </div>
     </div>
@@ -144,7 +144,7 @@ const CHAPTERS = [
     id: 'log', theme: 'ink', eyebrow: 'Logging', title: ['Log a set.', 'One tap.'],
     copy: 'Last session\'s numbers are already filled in. Tap the check, the rest timer starts itself, and swolie tells you when you\'ve earned a heavier weight.',
     points: ['Automatic rest timer', 'Level Up nudges when you hit your reps', 'Instant PR celebrations'],
-    clip: 'app-log', sticker: 'lifting', callouts: ['levelup'],
+    clip: 'app-log', sticker: 'lifting', callouts: ['levelup', 'pr-banner'],
   },
   {
     id: 'recaps', theme: 'cream', eyebrow: 'Recaps', title: ['Your week,', 'Wrapped.'],
@@ -232,7 +232,7 @@ function Hero() {
           <div className="hero-actions">
             <AppStoreBadge />
             <a className="ghost-link" href="#film">
-              <span className="play">▶</span> Watch the 29-second pitch
+              <span className="play">▶</span> Watch the 36-second pitch
             </a>
           </div>
           <p className="hero-meta">For iPhone and Apple Watch</p>
@@ -295,7 +295,7 @@ function Film() {
       <div className="film-sticky">
         <div className="film-heading">
           <p className="pill-label">The film</p>
-          <h2 className="display">29 seconds of <span className="accent">swole.</span></h2>
+          <h2 className="display">36 seconds of <span className="accent">swole.</span></h2>
         </div>
         <div className="film-stage">
           <Sticker name="superhero" className="film-s film-s1" />
@@ -326,6 +326,15 @@ function Features() {
   }, [])
   const ch = CHAPTERS[active]
 
+  // Stage phones are stacked, so play only the active chapter's clip
+  useEffect(() => {
+    if (reducedMotion()) return
+    document.querySelectorAll('.stage-layer video').forEach((v, i) => {
+      if (i === active) v.play().catch(() => {})
+      else v.pause()
+    })
+  }, [active])
+
   return (
     <section className={`features theme-${ch.theme}`} id="features">
       <div className="shell features-grid">
@@ -350,7 +359,7 @@ function Features() {
             <Burst points={20} inner={0.8} className="stage-burst" />
             {CHAPTERS.map((c, i) => (
               <div className={`stage-layer ${i === active ? 'is-active' : ''}`} key={c.id}>
-                <Phone className="stage-phone" clip={media(`${c.clip}.mp4`)} poster={media(`${c.clip}.webp`)} label="" />
+                <Phone className="stage-phone" clip={media(`${c.clip}.mp4`)} poster={media(`${c.clip}.webp`)} label="" managed />
                 {c.callouts.map((name, k) => (
                   <div className={`callout callout-${c.id}-${k}`} key={name}><img src={shot(name)} alt="" /></div>
                 ))}
