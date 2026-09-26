@@ -232,7 +232,7 @@ function Hero() {
           <div className="hero-actions">
             <AppStoreBadge />
             <a className="ghost-link" href="#film">
-              <span className="play">▶</span> Watch the 36-second pitch
+              <span className="play">▶</span> Watch the 29-second pitch
             </a>
           </div>
           <p className="hero-meta">For iPhone and Apple Watch</p>
@@ -295,7 +295,7 @@ function Film() {
       <div className="film-sticky">
         <div className="film-heading">
           <p className="pill-label">The film</p>
-          <h2 className="display">36 seconds of <span className="accent">swole.</span></h2>
+          <h2 className="display">29 seconds of <span className="accent">swole.</span></h2>
         </div>
         <div className="film-stage">
           <Sticker name="superhero" className="film-s film-s1" />
