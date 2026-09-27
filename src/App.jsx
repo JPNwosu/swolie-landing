@@ -172,7 +172,7 @@ const CHAPTERS = [
     id: 'log', theme: 'ink', eyebrow: 'Logging', title: ['Log a set.', 'One tap.'],
     copy: 'Last session\'s numbers are already filled in. Tap the check, the rest timer starts itself, and swolie tells you when you\'ve earned a heavier weight.',
     points: ['Automatic rest timer', 'Level Up nudges when you hit your reps', 'Instant PR celebrations'],
-    clip: 'app-log', sticker: 'lifting', callouts: ['levelup', 'pr-banner'],
+    clip: 'app-log', sticker: 'lifting', callouts: ['levelup', 'rest-timer'],
   },
   {
     id: 'recaps', theme: 'cream', eyebrow: 'Recaps', title: ['Your week,', 'Wrapped.'],
@@ -268,7 +268,7 @@ function Hero() {
           <Phone className="hero-phone" clip={media('app-plan.mp4')} poster={media('app-plan.webp')}
             label="swolie app: moving from Home to today's workout" />
           <DieCut name="double-flex" alt="swolie flexing" burst="lime" className="hero-mascot" points={16} />
-          <div className="float-chip chip-streak"><img src={pose('streak')} alt="" className="chip-pose" /> 15-day streak</div>
+          <div className="float-chip chip-streak"><img src={pose('streak')} alt="" className="chip-pose" /> 13-day streak</div>
           <div className="float-chip chip-pr">New PR <b>+5 lb</b></div>
           <div className="float-chip chip-level">Level up ↑</div>
         </div>
@@ -390,7 +390,7 @@ function Features() {
                 {c.callouts.map((name, k) => (
                   <div className={`callout callout-${c.id}-${k}`} key={name}><img src={shot(name)} alt="" /></div>
                 ))}
-                {c.id === 'gains' && <div className="big-number">+27%</div>}
+                {c.id === 'gains' && <div className="big-number">+18%</div>}
                 {c.id === 'recaps' && (
                   <>
                     <img className="recap-fan fan-l" src={shot('11-recap-2')} alt="" />

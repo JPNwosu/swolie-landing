@@ -551,6 +551,12 @@ button { font: inherit; }
 /* ==========================================================================
    Responsive
    ========================================================================== */
+/* Narrow desktops: keep chapter callouts off the copy column */
+@media (min-width: 1001px) and (max-width: 1280px) {
+  .callout-plan-0, .callout-plan-1, .callout-log-0, .callout-log-1, .callout-gains-0 { left: -1%; width: min(380px, 33vw); }
+  .chapter-copy { max-width: 21em; }
+}
+
 @media (max-width: 1000px) {
   .nav-links { display: none; }
   .nav-cta { margin-left: auto; }
