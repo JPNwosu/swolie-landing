@@ -104,6 +104,34 @@ function Sticker({ name, alt = '', className = '', style }) {
   return <img className={`sticker ${className}`} src={pose(name)} alt={alt} style={style} loading="lazy" draggable="false" />
 }
 
+// Die-cut mascot: white sticker edge, optionally sitting on an ink-stroked starburst
+function DieCut({ name, alt = '', burst = 'sun', points = 14, className = '', style }) {
+  return (
+    <div className={`diecut ${className}`} style={style}>
+      {burst && <Burst points={points} inner={0.8} className={`diecut-burst b-${burst}`} />}
+      <img src={pose(name)} alt={alt} loading="lazy" draggable="false" />
+    </div>
+  )
+}
+
+const Icon = {
+  play: <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.2-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5Z" /></svg>,
+  arrow: <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h12m-5-6 6 6-6 6" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" /></svg>,
+  soundOff: <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" /><path d="m16 9.5 5 5m0-5-5 5" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" /></svg>,
+  soundOn: <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" /><path d="M16 9a4.5 4.5 0 0 1 0 6m2.8-8.8a8.5 8.5 0 0 1 0 11.6" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" /></svg>,
+}
+
+// Push-sticker button: fill + ink edge + hard drop that shrinks when pressed
+function PushButton({ as = 'a', variant = 'primary', icon = 'arrow', size = '', children, className = '', ...rest }) {
+  const Tag = as
+  return (
+    <Tag className={`btn btn-${variant} ${size ? `btn-${size}` : ''} ${className}`} {...rest}>
+      <span className="btn-badge">{Icon[icon]}</span>
+      <span className="btn-text">{children}</span>
+    </Tag>
+  )
+}
+
 function Burst({ points = 16, inner = 0.74, className = '', style }) {
   const pts = []
   for (let i = 0; i < points * 2; i++) {
@@ -144,7 +172,7 @@ const CHAPTERS = [
     id: 'log', theme: 'ink', eyebrow: 'Logging', title: ['Log a set.', 'One tap.'],
     copy: 'Last session\'s numbers are already filled in. Tap the check, the rest timer starts itself, and swolie tells you when you\'ve earned a heavier weight.',
     points: ['Automatic rest timer', 'Level Up nudges when you hit your reps', 'Instant PR celebrations'],
-    clip: 'app-log', sticker: 'lifting', callouts: ['levelup', 'pr-banner'],
+    clip: 'app-log', sticker: 'lifting', callouts: ['levelup', 'rest-timer'],
   },
   {
     id: 'recaps', theme: 'cream', eyebrow: 'Recaps', title: ['Your week,', 'Wrapped.'],
@@ -195,7 +223,7 @@ function Nav() {
           <a href="#everywhere">Watch</a>
           <a href="#moods">Meet swolie</a>
         </div>
-        <a className="nav-cta" href={APP_STORE_URL} target="_blank" rel="noopener noreferrer">Get the app</a>
+        <PushButton className="nav-cta" size="sm" href={APP_STORE_URL} target="_blank" rel="noopener noreferrer">Get the app</PushButton>
       </nav>
     </header>
   )
@@ -231,9 +259,7 @@ function Hero() {
           </p>
           <div className="hero-actions">
             <AppStoreBadge />
-            <a className="ghost-link" href="#film">
-              <span className="play">▶</span> Watch the 29-second pitch
-            </a>
+            <PushButton variant="secondary" icon="play" href="#film">Watch the 29-second pitch</PushButton>
           </div>
           <p className="hero-meta">For iPhone and Apple Watch</p>
         </div>
@@ -241,8 +267,8 @@ function Hero() {
         <div className="hero-art" aria-label="swolie app preview">
           <Phone className="hero-phone" clip={media('app-plan.mp4')} poster={media('app-plan.webp')}
             label="swolie app: moving from Home to today's workout" />
-          <Sticker name="double-flex" alt="swolie flexing" className="hero-mascot" />
-          <div className="float-chip chip-streak"><Sticker name="streak" className="chip-pose" /> 15-day streak</div>
+          <DieCut name="double-flex" alt="swolie flexing" burst="lime" className="hero-mascot" points={16} />
+          <div className="float-chip chip-streak"><img src={pose('streak')} alt="" className="chip-pose" /> 13-day streak</div>
           <div className="float-chip chip-pr">New PR <b>+5 lb</b></div>
           <div className="float-chip chip-level">Level up ↑</div>
         </div>
@@ -304,9 +330,10 @@ function Film() {
           <Sticker name="fist-bump" className="film-s film-s4" />
           <div className="film-card">
             <Clip videoRef={video} src={media('launch.mp4')} poster={media('launch.webp')} label="swolie launch film" />
-            <button className="sound-btn" type="button" onClick={toggle} aria-pressed={!muted}>
-              {muted ? '🔈 Tap for sound' : '🔊 Sound on'}
-            </button>
+            <PushButton as="button" type="button" variant={muted ? 'secondary' : 'lime'} size="sm" icon={muted ? 'soundOff' : 'soundOn'}
+              className="sound-btn" onClick={toggle} aria-pressed={!muted}>
+              {muted ? 'Tap for sound' : 'Sound on'}
+            </PushButton>
           </div>
         </div>
       </div>
@@ -348,7 +375,7 @@ function Features() {
               <ul className="ticks">{c.points.map((p) => <li key={p}>{p}</li>)}</ul>
               <div className="chapter-mobile-art">
                 <Phone clip={media(`${c.clip}.mp4`)} poster={media(`${c.clip}.webp`)} label={`${c.eyebrow} in the swolie app`} />
-                <Sticker name={c.sticker} className="chapter-mobile-sticker" />
+                <DieCut name={c.sticker} burst={i % 2 ? 'lime' : 'sun'} className="chapter-mobile-sticker" />
               </div>
             </article>
           ))}
@@ -363,14 +390,14 @@ function Features() {
                 {c.callouts.map((name, k) => (
                   <div className={`callout callout-${c.id}-${k}`} key={name}><img src={shot(name)} alt="" /></div>
                 ))}
-                {c.id === 'gains' && <div className="big-number">+27%</div>}
+                {c.id === 'gains' && <div className="big-number">+18%</div>}
                 {c.id === 'recaps' && (
                   <>
                     <img className="recap-fan fan-l" src={shot('11-recap-2')} alt="" />
                     <img className="recap-fan fan-r" src={shot('13-recap-4')} alt="" />
                   </>
                 )}
-                <Sticker name={c.sticker} className={`stage-sticker sticker-${c.id}`} />
+                <DieCut name={c.sticker} burst={i % 2 ? 'lime' : 'sun'} className={`stage-sticker sticker-${c.id}`} />
               </div>
             ))}
             <div className="chapter-dots">
@@ -416,7 +443,7 @@ function Everywhere() {
             <img src={shot('widget')} alt="swolie year widget showing active days" loading="lazy" />
             <figcaption>Widgets</figcaption>
           </figure>
-          <Sticker name="watch" className="ew-sticker" />
+          <DieCut name="watch" burst="lime" className="ew-sticker" />
         </div>
       </div>
     </section>
@@ -428,9 +455,9 @@ function MuscleMap() {
     <section className="muscles" data-scroll="through">
       <div className="shell muscles-grid">
         <div className="muscle-art" data-reveal>
-          <div className="heat-glow" aria-hidden="true" />
+          <Burst points={22} inner={0.84} className="heat-burst" />
           <div className="callout muscle-figures"><img src={shot('muscle-figures')} alt="Front and back muscle heat map" loading="lazy" /></div>
-          <Sticker name="magnify" className="muscle-sticker" />
+          <DieCut name="magnify" burst="sun" className="muscle-sticker" />
         </div>
         <div className="muscle-copy" data-reveal>
           <p className="pill-label">Muscle map</p>
@@ -455,7 +482,7 @@ function Extras() {
         <div className="extras-grid">
           {EXTRAS.map((x, i) => (
             <article className="extra" key={x.title} data-reveal style={{ '--i': i }}>
-              <Sticker name={x.pose} className="extra-pose" />
+              <DieCut name={x.pose} points={12} className="extra-pose" />
               <h3>{x.title}</h3>
               <p>{x.copy}</p>
             </article>
@@ -518,7 +545,7 @@ function FinalCta() {
     <section className="final" data-scroll="through">
       <Burst points={18} inner={0.78} className="final-burst" />
       <div className="shell final-inner" data-reveal>
-        <Sticker name="victory-dance" alt="swolie doing a victory dance" className="final-mascot" />
+        <DieCut name="victory-dance" alt="swolie doing a victory dance" burst="lime" points={16} className="final-mascot" />
         <div className="final-brand">
           <img src={`${base}images/appicon-light.png`} alt="" />
           <span>swolie</span>
