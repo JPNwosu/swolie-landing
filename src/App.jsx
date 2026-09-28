@@ -205,6 +205,20 @@ const POSES = [
   'megaphone', 'mind-blown', 'think', 'camera', 'graduate', 'birthday', 'comeback', 'sad-rain',
 ]
 
+// Real App Store reviews, quoted verbatim (5★ written reviews as of Sep 28, 2026).
+// Ratings summary is a snapshot: refresh with `asc reviews ratings --app 6756705472 --all`.
+const RATING = { average: 4.9, count: 21 }
+const REVIEWS = [
+  { title: 'Delete your current workout app!', body: 'This app is by far the best workout tracker/planner I have ever seen. I can’t believe it’s 100% completely free!', name: 'Bensenmy', where: 'Canada', pose: 'trophy' },
+  { title: 'Great gym tracker!', body: 'I never leave reviews but this is Great app here, does most things and does them very well, excited for future development! Greatly appreciate the lack of accounts, pricing, and ads, really just you and the gains. Thank you for such a great Gym app!', name: 'chaserayden', where: 'United States', pose: 'lifting' },
+  { title: 'Great workout app', body: 'The app is great. I actually only tried it because of the swolie character. He’s pretty cool. 😎', name: 'Mr MJ123', where: 'Australia', pose: 'wave' },
+  { title: 'Great start!!!!', body: 'I randomly came to Swolie and I’m amazed about how much fun and simple tracking a workout can be. I’m lost with the bells and whistles of most of the other similar apps.', name: 'mactanzi76', where: 'Costa Rica', pose: 'cheer' },
+  { title: 'Rare Find', body: 'Crazy that a workout app of such high quality is completely free. Such a refreshing thing to see!', name: 'SideQurst', where: 'United States', pose: 'magnify' },
+  { title: 'Phenomenal', body: 'Everything the paid apps has but for FREEEEEEE', name: 'Ch0ppaDawg', where: 'Canada', pose: 'double-flex' },
+  { title: 'Amazing App!!!', body: 'This is the best app I’ve ever used to track my workouts and it’s free!!', name: 'Sugarplumdelite', where: 'United States', pose: 'pr' },
+  { title: 'IT’S FREE', body: 'Awesome Tracker. Would pay for this.', name: 'oikjhb', where: 'Canada', pose: 'fist-bump' },
+]
+
 const RECAP_REEL = ['10-recap-1', '11-recap-2', '12-recap-3', '13-recap-4']
 
 // ---------------------------------------------------------------------------
@@ -540,6 +554,49 @@ function Moods() {
   )
 }
 
+function Stars({ className = '' }) {
+  return (
+    <span className={`stars ${className}`} aria-hidden="true">
+      {[0, 1, 2, 3, 4].map((i) => (
+        <svg key={i} viewBox="0 0 24 24"><path d="M12 2.6l2.9 6.1 6.7.8-4.9 4.6 1.3 6.6L12 17.4l-6 3.3 1.3-6.6-4.9-4.6 6.7-.8z" /></svg>
+      ))}
+    </span>
+  )
+}
+
+function Reviews() {
+  return (
+    <section className="reviews" id="reviews" aria-labelledby="reviews-title">
+      <div className="shell">
+        <div className="section-head center" data-reveal>
+          <p className="pill-label">Real App Store reviews</p>
+          <h2 className="display" id="reviews-title">People love<br />their <span className="accent">buddy</span>.</h2>
+          <a className="rating-badge" href={APP_STORE_URL} target="_blank" rel="noreferrer">
+            <strong>{RATING.average.toFixed(1)}</strong>
+            <Stars />
+            <span>{RATING.count} ratings on the App Store</span>
+          </a>
+        </div>
+        <div className="review-wall">
+          {REVIEWS.map((r, i) => (
+            <figure className="review" key={r.name} data-reveal style={{ '--i': i, '--r': `${((i * 29) % 7) - 3}deg` }}>
+              <Stars />
+              <blockquote>
+                <p className="review-title">{r.title}</p>
+                <p>{r.body}</p>
+              </blockquote>
+              <figcaption>
+                <img src={pose(r.pose)} alt="" loading="lazy" />
+                <span><strong>{r.name}</strong>{r.where}</span>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
 function FinalCta() {
   return (
     <section className="final" data-scroll="through">
@@ -595,6 +652,7 @@ export default function App() {
         <RecapReel />
         <Extras />
         <Moods />
+        <Reviews />
         <FinalCta />
       </main>
       <Footer />

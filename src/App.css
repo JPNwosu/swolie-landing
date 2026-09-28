@@ -551,6 +551,45 @@ button { font: inherit; }
 /* ==========================================================================
    Responsive
    ========================================================================== */
+/* ---------- reviews ---------- */
+.reviews {
+  position: relative; padding: clamp(100px, 12vw, 150px) 0; background-color: var(--ink); color: var(--cream);
+  background-image: radial-gradient(rgba(46, 189, 168, .16) 2px, transparent 2.5px); background-size: 26px 26px;
+  --fg: var(--cream); --extrude: var(--teal); --accent: var(--lime); --label-bg: var(--lime); --label-fg: var(--ink); --label-edge: #fff;
+}
+.reviews .section-head { display: flex; flex-direction: column; align-items: center; }
+.reviews .pill-label { align-self: center; }
+.rating-badge {
+  display: inline-flex; align-items: center; gap: 12px; margin-top: 30px; padding: 10px 20px 10px 14px;
+  background: var(--sun); color: var(--ink); text-decoration: none; border-radius: 999px; transform: rotate(-2deg);
+  border: var(--edge) solid #fff; box-shadow: 0 6px 0 var(--teal-deep);
+  font-family: var(--display); font-weight: 600; font-size: 16px; transition: transform .2s var(--bounce), box-shadow .2s;
+}
+.rating-badge strong { font-size: 30px; line-height: 1; font-weight: 700; }
+.rating-badge:hover { transform: rotate(-2deg) translateY(-3px); box-shadow: 0 9px 0 var(--teal-deep); }
+.rating-badge .stars svg { fill: var(--ink); }
+.stars { display: inline-flex; gap: 2px; }
+.stars svg { width: 18px; height: 18px; fill: var(--sun); stroke: var(--ink); stroke-width: 1.4; stroke-linejoin: round; }
+.review-wall { columns: 3 300px; column-gap: 26px; }
+.review {
+  break-inside: avoid; margin: 0 0 30px; padding: 22px 24px 20px; border-radius: 24px;
+  background: var(--cream); color: var(--ink); border: var(--edge) solid #fff; box-shadow: 0 8px 0 var(--teal);
+  rotate: var(--r); transition: opacity .45s var(--smooth), transform .8s var(--pop), box-shadow .2s, rotate .3s;
+  transition-delay: calc(var(--i) * 60ms);
+}
+.review:nth-child(3n+2) { background: #FFE08A; box-shadow: 0 8px 0 var(--coral); }
+.review:nth-child(3n) { background: var(--mint); box-shadow: 0 8px 0 var(--lime); }
+.review:hover { rotate: 0deg; transform: translateY(-4px); transition-delay: 0s; transition-duration: .3s; }
+.review[data-reveal]:not(.in) { opacity: 0; transform: translateY(30px) scale(.94); }
+.review blockquote { margin: 12px 0 0; }
+.review-title { font-family: var(--display); font-weight: 700; font-size: 22px; line-height: 1.15; margin-bottom: 8px; }
+.review blockquote p:not(.review-title) { font-size: 16px; line-height: 1.55; color: rgba(20, 27, 26, .85); }
+.review figcaption { display: flex; align-items: center; gap: 10px; margin-top: 18px; }
+.review figcaption img { width: 44px; height: 44px; object-fit: contain; filter: var(--diecut-sm); }
+.review figcaption span { display: flex; flex-direction: column; font-size: 13px; color: rgba(20, 27, 26, .65); }
+.review figcaption strong { font-family: var(--display); font-weight: 700; font-size: 16px; color: var(--ink); }
+@media (prefers-reduced-motion: reduce) { .review, .rating-badge { transition: none; } .review { rotate: 0deg; } }
+
 /* Narrow desktops: keep chapter callouts off the copy column */
 @media (min-width: 1001px) and (max-width: 1280px) {
   .callout-plan-0, .callout-plan-1, .callout-log-0, .callout-log-1, .callout-gains-0 { left: -1%; width: min(380px, 33vw); }
