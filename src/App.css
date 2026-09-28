@@ -608,7 +608,7 @@ button { font: inherit; }
   .watch { transform: scale(.8); margin: 110px 0; }
   .ew-live img { border-radius: 30px; border-width: 6px; }
   .ew-widget img { border-radius: 32px; border-width: 6px; }
-  .ew-sticker { width: 120px; bottom: -40px; }
+  .ew-sticker { width: 100px; bottom: -84px; right: -1%; }
   .callout { border-width: 5px; }
   .final-meta { font-size: 12px; letter-spacing: .05em; padding-inline: 12px; }
   .footer-inner { grid-template-columns: 1fr; }

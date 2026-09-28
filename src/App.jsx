@@ -440,7 +440,7 @@ function Everywhere() {
             <figcaption>Apple Watch</figcaption>
           </figure>
           <figure className="ew-widget" data-reveal>
-            <img src={shot('widget')} alt="swolie year widget showing active days" loading="lazy" />
+            <img src={shot('widget')} alt="swolie Home Screen widget showing the last 7 days of workouts" loading="lazy" />
             <figcaption>Widgets</figcaption>
           </figure>
           <DieCut name="watch" burst="lime" className="ew-sticker" />
