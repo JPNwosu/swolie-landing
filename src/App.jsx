@@ -207,7 +207,7 @@ const POSES = [
 
 // Real App Store reviews, quoted verbatim (5★ written reviews as of Sep 28, 2026).
 // Ratings summary is a snapshot: refresh with `asc reviews ratings --app 6756705472 --all`.
-const RATING = { average: 4.9, count: 21 }
+const RATING = { average: 4.9 }
 const REVIEWS = [
   { title: 'Delete your current workout app!', body: 'This app is by far the best workout tracker/planner I have ever seen. I can’t believe it’s 100% completely free!', name: 'Bensenmy', where: 'Canada', pose: 'trophy' },
   { title: 'Great gym tracker!', body: 'I never leave reviews but this is Great app here, does most things and does them very well, excited for future development! Greatly appreciate the lack of accounts, pricing, and ads, really just you and the gains. Thank you for such a great Gym app!', name: 'chaserayden', where: 'United States', pose: 'lifting' },
@@ -574,7 +574,7 @@ function Reviews() {
           <a className="rating-badge" href={APP_STORE_URL} target="_blank" rel="noreferrer">
             <strong>{RATING.average.toFixed(1)}</strong>
             <Stars />
-            <span>{RATING.count} ratings on the App Store</span>
+            <span>on the App Store</span>
           </a>
         </div>
         <div className="review-wall">
