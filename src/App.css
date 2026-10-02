@@ -276,8 +276,6 @@ button { font: inherit; }
   position: relative; background: var(--bg); color: var(--fg);
   transition: background-color .7s var(--smooth), color .7s var(--smooth);
 }
-.theme-teal { --bg: var(--teal); --fg: var(--cream); --extrude: var(--ink); --accent: var(--lime); --label-bg: var(--lime); --label-fg: var(--ink); --label-edge: var(--ink); --burst: var(--teal-hi); --burst-stroke: var(--ink); --tick: var(--lime); --drop: var(--ink); }
-.theme-violet { --bg: var(--violet); --fg: var(--cream); --extrude: #26157A; --accent: var(--lime); --label-bg: var(--lime); --label-fg: var(--ink); --label-edge: var(--ink); --burst: #7F66FF; --burst-stroke: var(--ink); --tick: var(--lime); --drop: #26157A; }
 .theme-sun        { --bg: var(--sun);   --fg: var(--ink);   --extrude: var(--coral); --accent: var(--coral); --label-bg: var(--teal); --label-fg: var(--ink); --label-edge: var(--ink); --burst: #FFB21F; --burst-stroke: var(--ink); --tick: var(--teal); --drop: var(--ink); }
 .theme-ink        { --bg: var(--ink);   --fg: var(--cream); --extrude: var(--teal);  --accent: var(--lime);  --label-bg: var(--lime); --label-fg: var(--ink); --label-edge: #fff; --burst: #1F2E2B; --burst-stroke: rgba(255, 255, 255, .5); --tick: var(--lime); --drop: var(--teal); }
 .theme-cream          { --bg: var(--cream); --fg: var(--ink);   --extrude: var(--pink);  --accent: var(--pink);  --label-bg: var(--teal); --label-fg: var(--ink); --label-edge: var(--ink); --burst: #FFD9E9; --burst-stroke: var(--ink); --tick: var(--pink); --drop: var(--pink); }
@@ -318,17 +316,10 @@ button { font: inherit; }
 .callout-plan-0 { width: min(420px, 36vw); left: -16%; top: 20%; rotate: -4deg; }
 .callout-plan-1 { width: min(420px, 36vw); left: -10%; bottom: 10%; rotate: 3deg; }
 .sticker-plan { right: 2%; top: 13%; rotate: 10deg; }
-/* Coach: swolie's speech bubbles float off the phone */
-.callout-coach-0 { width: min(470px, 41vw); left: -20%; top: 18%; rotate: -5deg; background: #FFF8EC; }
-.callout-coach-1 { width: min(440px, 38vw); left: -12%; bottom: 18%; rotate: 3deg; background: #FFF8EC; border-color: var(--lime); }
-.sticker-coach { right: 0; top: 12%; rotate: 8deg; }
-.callout-level-0 { width: min(400px, 34vw); left: -6%; top: 13%; rotate: -4deg; border-color: var(--lime); background: #fff; }
-.callout-level-1 { width: min(470px, 41vw); left: -14%; bottom: 14%; rotate: 3deg; border-color: var(--sun); background: #FFF8EC; }
-.sticker-level { right: 0; bottom: 12%; rotate: 8deg; }
-.callout-heart-0 { width: min(440px, 38vw); left: -18%; top: 20%; rotate: -4deg; background: #EAF7F3; }
-.callout-heart-1 { width: min(480px, 42vw); left: -14%; bottom: 12%; rotate: 2deg; background: #FFF8EC; border-color: var(--lime); }
-.sticker-heart { right: 0; top: 14%; rotate: -8deg; }
-.theme-ink .callout, .theme-violet .callout { box-shadow: 0 0 0 var(--edge) #fff, 0 10px 0 var(--edge) var(--teal); }
+.callout-log-0 { width: min(460px, 40vw); left: -20%; top: 22%; rotate: -5deg; border-color: var(--lime); }
+.callout-log-1 { width: min(470px, 41vw); left: -14%; bottom: 20%; rotate: 3deg; border-color: var(--sun); }
+.theme-ink .callout { box-shadow: 0 0 0 var(--edge) #fff, 0 10px 0 var(--edge) var(--teal); }
+.sticker-log { right: 0; bottom: 12%; rotate: 8deg; }
 .sticker-recaps { right: 0; top: 14%; rotate: 8deg; }
 .recap-fan {
   position: absolute; width: min(210px, 18vw); border-radius: 24px; border: 6px solid #fff; z-index: 1;
@@ -401,32 +392,6 @@ button { font: inherit; }
 .watch-time { position: absolute; left: 97px; top: 40px; width: 80px; height: 27px; background: #000; color: #fff; text-align: center; font: 600 21px/27px -apple-system, "SF Pro", system-ui, sans-serif; }
 .watch-crown { position: absolute; right: -24px; top: 110px; width: 20px; height: 70px; border-radius: 7px; background: #bdb6a6; border: var(--edge) solid var(--ink); }
 .watch-action { position: absolute; right: -19px; top: 205px; width: 14px; height: 54px; border-radius: 6px; background: #E8702A; border: var(--edge) solid var(--ink); }
-
-/* ==========================================================================
-   Exercise demos
-   ========================================================================== */
-.demos {
-  position: relative; overflow: hidden; padding: clamp(100px, 13vw, 160px) 0;
-  background-color: var(--sun); color: var(--ink);
-  background-image: radial-gradient(rgba(20, 27, 26, .10) 2px, transparent 2.5px); background-size: 26px 26px;
-  --fg: var(--ink); --extrude: var(--coral); --accent: var(--coral); --label-bg: var(--ink); --label-fg: var(--sun); --label-edge: var(--ink); --drop: var(--ink);
-}
-.demos-grid { display: grid; grid-template-columns: .9fr 1.1fr; gap: 60px; align-items: center; }
-.demos .display { font-size: clamp(44px, 5.2vw, 84px); }
-.demos-copy .section-copy { margin-top: 24px; opacity: .88; }
-.demo-wall { position: relative; display: grid; grid-template-columns: 1fr 1fr; gap: 26px 22px; }
-.demo-card {
-  position: relative; margin: 0; background: #fff; border-radius: 26px; overflow: hidden; rotate: var(--r, 0deg);
-  border: 6px solid #fff; box-shadow: 0 0 0 var(--edge) var(--ink), 0 10px 0 var(--edge) var(--ink);
-}
-.demo-card[data-reveal] { transition-delay: calc(var(--i, 0) * .08s); }
-.demo-card:nth-child(even) { translate: 0 34px; }
-.demo-card img { width: 100%; }
-.demo-card figcaption {
-  position: absolute; left: 10px; bottom: 10px; font-family: var(--display); font-weight: 700; font-size: 14px;
-  background: var(--lime); color: var(--ink); padding: 5px 12px 4px; border-radius: 999px; border: 2.5px solid var(--ink);
-}
-.demo-sticker { width: clamp(120px, 12vw, 160px); right: -5%; bottom: -14%; rotate: -10deg; animation: bob 4.2s ease-in-out infinite; z-index: 2; }
 
 /* ==========================================================================
    Muscle map
@@ -627,8 +592,7 @@ button { font: inherit; }
 
 /* Narrow desktops: keep chapter callouts off the copy column */
 @media (min-width: 1001px) and (max-width: 1280px) {
-  .callout-plan-0, .callout-plan-1, .callout-coach-0, .callout-coach-1, .callout-level-0, .callout-level-1,
-  .callout-heart-0, .callout-heart-1, .callout-gains-0 { left: -1%; width: min(380px, 33vw); }
+  .callout-plan-0, .callout-plan-1, .callout-log-0, .callout-log-1, .callout-gains-0 { left: -1%; width: min(380px, 33vw); }
   .chapter-copy { max-width: 21em; }
 }
 
@@ -650,8 +614,6 @@ button { font: inherit; }
   .features { transition: none; background: none; }
   .chapter { background: var(--bg); color: var(--fg); margin-inline: calc(50% - 50vw); padding-inline: max(20px, calc(50vw - 50%)); }
   .chapter .display { color: var(--fg); }
-  .chapter.m-teal { --bg: var(--teal); --fg: var(--cream); --extrude: var(--ink); --accent: var(--lime); --label-bg: var(--lime); --label-fg: var(--ink); --label-edge: var(--ink); --burst: var(--teal-hi); --burst-stroke: var(--ink); --tick: var(--lime); --drop: var(--ink); }
-  .chapter.m-violet { --bg: var(--violet); --fg: var(--cream); --extrude: #26157A; --accent: var(--lime); --label-bg: var(--lime); --label-fg: var(--ink); --label-edge: var(--ink); --burst: #7F66FF; --burst-stroke: var(--ink); --tick: var(--lime); --drop: #26157A; }
   .chapter.m-sun { --bg: var(--sun);   --fg: var(--ink);   --extrude: var(--coral); --accent: var(--coral); --label-bg: var(--teal); --label-fg: var(--ink); --label-edge: var(--ink); --burst: #FFB21F; --burst-stroke: var(--ink); --tick: var(--teal); --drop: var(--ink); }
   .chapter.m-ink { --bg: var(--ink);   --fg: var(--cream); --extrude: var(--teal);  --accent: var(--lime);  --label-bg: var(--lime); --label-fg: var(--ink); --label-edge: #fff; --burst: #1F2E2B; --burst-stroke: rgba(255, 255, 255, .5); --tick: var(--lime); --drop: var(--teal); }
   .chapter.m-cream { --bg: var(--cream); --fg: var(--ink);   --extrude: var(--pink);  --accent: var(--pink);  --label-bg: var(--teal); --label-fg: var(--ink); --label-edge: var(--ink); --burst: #FFD9E9; --burst-stroke: var(--ink); --tick: var(--pink); --drop: var(--pink); }
@@ -660,8 +622,7 @@ button { font: inherit; }
   .hero-burst { width: 700px; left: -300px; bottom: -330px; }
 
   .ew-stage { grid-template-columns: 1fr; grid-template-areas: "live" "watch" "widget"; }
-  .muscles-grid, .demos-grid { grid-template-columns: 1fr; }
-  .demo-wall { margin-top: 20px; }
+  .muscles-grid { grid-template-columns: 1fr; }
   .extras-grid { grid-template-columns: repeat(2, 1fr); }
 }
 @media (max-width: 640px) {
@@ -688,10 +649,6 @@ button { font: inherit; }
   .ew-widget img { border-radius: 32px; border-width: 6px; }
   .ew-sticker { width: 100px; bottom: -84px; right: -1%; }
   .callout { border-width: 5px; }
-  .demo-wall { gap: 18px 14px; }
-  .demo-card { border-width: 4px; border-radius: 18px; }
-  .demo-card figcaption { font-size: 11px; left: 6px; bottom: 6px; padding: 3px 8px 2px; border-width: 2px; }
-  .demo-sticker { width: 92px; right: -2%; top: -70px; bottom: auto; }
   .final-meta { font-size: 12px; letter-spacing: .05em; padding-inline: 12px; }
   .footer-inner { grid-template-columns: 1fr; }
   .footer-sticker { width: 96px; }

@@ -157,34 +157,22 @@ function AppStoreBadge({ className = '' }) {
 
 // ---------------------------------------------------------------------------
 
-const MARQUEE_A = ['a coach for every set', 'plans that fit your week', 'smart progression', 'live heart rate', '1,600+ exercise demos', 'weekly wrapped recaps']
-const MARQUEE_B = ['level up', '+1 rep', 'new PR', 'ready to go', 'rest timer', 'muscle map', 'progress photos', 'streak widgets']
+const MARQUEE_A = ['log sets in one tap', 'plans that fit your week', 'weekly wrapped recaps', 'apple watch', 'live activities', 'streak widgets']
+const MARQUEE_B = ['level up', 'new PR', 'rest timer', 'muscle map', 'progress photos', 'cardio from health']
 const MARQUEE_POSES = ['wave', 'lifting', 'cheer', 'pr', 'streak', 'trophy']
 
 const CHAPTERS = [
-  {
-    id: 'coach', theme: 'teal', eyebrow: 'Your coach', title: ['A buddy for', 'every set.'],
-    copy: 'swolie rides along in every workout. Before a set it gives you a goal based on last time. After it, a cheer for every rep you beat, and a heads-up the moment you\'re ready for more.',
-    points: ['A goal for every set: "you got 8 last time, go for 9"', 'Reactions, PR shout-outs and warm-up checks', 'A guided tour on your very first workout'],
-    clip: 'app-coach', sticker: 'cheer', callouts: ['bubble-set2', 'bubble-plus1'],
-  },
-  {
-    id: 'level', theme: 'ink', eyebrow: 'Smart progression', title: ['Hit your reps.', 'Level up.'],
-    copy: 'Pick a rep range and swolie handles the math. Beat last time set by set, hit the top of the range on every set, and swolie tells you it\'s time to go heavier. One tap loads the new weight.',
-    points: ['Auto progression, on from day one', 'Always shows what unlocks the next weight', 'Warm-ups never mess with your numbers'],
-    clip: 'app-levelup', sticker: 'overhead-press', callouts: ['detail-progression', 'levelup-coach'],
-  },
-  {
-    id: 'heart', theme: 'violet', eyebrow: 'Heart rate', title: ['Rest till', "you're Ready."],
-    copy: 'Wear a watch or a chest strap and your heart rate rides along with every set. When you\'ve recovered, the rest ring turns lime and swolie says go. No more guessing if the rest was long enough.',
-    points: ['Live heart rate while you lift', 'Ready shows up on your Lock Screen too', 'Peak heart rate for every set, after the fact'],
-    clip: 'app-ready', sticker: 'watch', callouts: ['hr-ready', 'live-activity-hr'],
-  },
   {
     id: 'plan', theme: 'sun', eyebrow: 'Your plan', title: ['Always know', "what's next."],
     copy: 'Pick your days and swolie builds the week around them. Open the app and today\'s workout is already waiting, with every exercise, set and rep laid out.',
     points: ['3, 4 and 6-day plans, or train flexibly', 'Rest days that stay rest days', 'Swap a workout when life happens'],
     clip: 'app-plan', sticker: 'clipboard', callouts: ['today-plan', 'today-list'],
+  },
+  {
+    id: 'log', theme: 'ink', eyebrow: 'Logging', title: ['Log a set.', 'One tap.'],
+    copy: 'Last session\'s numbers are already filled in. Tap the check, the rest timer starts itself, and swolie tells you when you\'ve earned a heavier weight.',
+    points: ['Automatic rest timer', 'Level Up nudges when you hit your reps', 'Instant PR celebrations'],
+    clip: 'app-log', sticker: 'lifting', callouts: ['levelup', 'rest-timer'],
   },
   {
     id: 'recaps', theme: 'cream', eyebrow: 'Recaps', title: ['Your week,', 'Wrapped.'],
@@ -201,12 +189,12 @@ const CHAPTERS = [
 ]
 
 const EXTRAS = [
-  { pose: 'camera', title: 'Progress photos', copy: 'Sticker-framed check-ins with side-by-side compares.' },
+  { pose: 'camera', title: 'Progress photos', copy: 'Consistent check-ins with side-by-side compares.' },
   { pose: 'run', title: 'Cardio from Health', copy: 'Runs and rides land next to your lifts.' },
   { pose: 'timer', title: 'Smart rest timer', copy: 'Starts on its own. ±15s when you need it.' },
-  { pose: 'pr', title: 'One-tap logging', copy: 'Last time\'s numbers are already filled in. A big sticker keypad for the rest.' },
+  { pose: 'overhead-press', title: 'Auto progression', copy: 'Hit your reps, get a nudge to go heavier.' },
   { pose: 'streak', title: 'Streaks & widgets', copy: 'A year of effort, one glance at your Home Screen.' },
-  { pose: 'heavy-haul', title: 'Plate calculator', copy: 'Know exactly what goes on each side of the bar.' },
+  { pose: 'open-book', title: '900+ exercises', copy: 'Demos and muscle maps for every one, plus your own custom exercises.' },
 ]
 
 // A hand-picked sample of swolie's poses (the full set keeps growing)
@@ -231,13 +219,6 @@ const REVIEWS = [
   { title: 'IT’S FREE', body: 'Awesome Tracker. Would pay for this.', name: 'oikjhb', where: 'Canada', pose: 'fist-bump' },
 ]
 
-const DEMOS = [
-  { shot: 'demo-hack-squat', name: 'Hack Squat' },
-  { shot: 'demo-leg-press', name: 'Leg Press' },
-  { shot: 'demo-rdl', name: 'Romanian Deadlift' },
-  { shot: 'demo-leg-curl', name: 'Seated Leg Curl' },
-]
-
 const RECAP_REEL = ['10-recap-1', '11-recap-2', '12-recap-3', '13-recap-4']
 
 // ---------------------------------------------------------------------------
@@ -253,7 +234,6 @@ function Nav() {
         <div className="nav-links">
           <a href="#film">The film</a>
           <a href="#features">Features</a>
-          <a href="#demos">Exercises</a>
           <a href="#everywhere">Watch</a>
           <a href="#moods">Meet swolie</a>
         </div>
@@ -288,8 +268,8 @@ function Hero() {
             <span className="line">gym buddy<span className="accent">.</span></span>
           </h1>
           <p className="lede">
-            swolie talks you through every set: a goal before it, a cheer after it, and a heads-up
-            when it&apos;s time to go heavier. Basically a spotter that lives in your pocket.
+            swolie plans your week, logs every set in a tap, and turns your progress into stories
+            worth sharing. Basically a spotter that lives in your pocket.
           </p>
           <div className="hero-actions">
             <AppStoreBadge />
@@ -299,12 +279,12 @@ function Hero() {
         </div>
 
         <div className="hero-art" aria-label="swolie app preview">
-          <Phone className="hero-phone" clip={media('app-coach.mp4')} poster={media('app-coach.webp')}
-            label="swolie coaching a set: a rep goal, then a cheer for beating last time" />
+          <Phone className="hero-phone" clip={media('app-plan.mp4')} poster={media('app-plan.webp')}
+            label="swolie app: moving from Home to today's workout" />
           <DieCut name="double-flex" alt="swolie flexing" burst="lime" className="hero-mascot" points={16} />
-          <div className="float-chip chip-streak"><img src={pose('cheer')} alt="" className="chip-pose" /> +1 rep!</div>
-          <div className="float-chip chip-pr">Set 2: go for <b>9</b></div>
-          <div className="float-chip chip-level"><span aria-hidden="true">♥</span> Ready</div>
+          <div className="float-chip chip-streak"><img src={pose('streak')} alt="" className="chip-pose" /> 13-day streak</div>
+          <div className="float-chip chip-pr">New PR <b>+5 lb</b></div>
+          <div className="float-chip chip-level">Level up ↑</div>
         </div>
       </div>
       <a className="scroll-cue" href="#film" aria-label="Scroll down">
@@ -451,12 +431,12 @@ function Everywhere() {
         <div className="section-head" data-reveal>
           <p className="pill-label">Everywhere</p>
           <h2 className="display">Lock Screen. Wrist.<br />Home Screen. <span className="accent">Done.</span></h2>
-          <p className="section-copy">Log sets, skip rest and see when you&apos;re Ready from the Lock Screen, follow along
-            on Apple Watch, and watch your year fill in right on your Home Screen.</p>
+          <p className="section-copy">Log sets and skip rest from the Lock Screen, follow along on Apple Watch,
+            and watch your year fill in right on your Home Screen.</p>
         </div>
         <div className="ew-stage">
           <figure className="ew-live" data-reveal>
-            <img src={shot('live-activity-hr')} alt="swolie Live Activity on the Lock Screen: rest timer, heart rate Ready, and the next set" loading="lazy" />
+            <img src={shot('live-activity')} alt="swolie Live Activity on the Lock Screen with rest timer and next set" loading="lazy" />
             <figcaption>Live Activity</figcaption>
           </figure>
           <figure className="ew-watch" data-reveal>
@@ -478,30 +458,6 @@ function Everywhere() {
             <figcaption>Widgets</figcaption>
           </figure>
           <DieCut name="watch" burst="lime" className="ew-sticker" />
-        </div>
-      </div>
-    </section>
-  )
-}
-
-function Demos() {
-  return (
-    <section className="demos" id="demos">
-      <div className="shell demos-grid">
-        <div className="demos-copy" data-reveal>
-          <p className="pill-label">Exercise library</p>
-          <h2 className="display">1,600+ moves<span className="accent">.</span><br />All animated<span className="accent">.</span></h2>
-          <p className="section-copy">Not sure how a machine works? Every exercise comes with an animated demo,
-            step-by-step form cues and the muscles it hits. Add your own when your gym has something special.</p>
-        </div>
-        <div className="demo-wall">
-          {DEMOS.map((d, i) => (
-            <figure className="demo-card" key={d.shot} data-reveal style={{ '--i': i, '--r': `${i % 2 ? 3 : -3}deg` }}>
-              <img src={shot(d.shot)} alt={`Animated demo frame: ${d.name}`} loading="lazy" />
-              <figcaption>{d.name}</figcaption>
-            </figure>
-          ))}
-          <DieCut name="open-book" burst="lime" className="demo-sticker" />
         </div>
       </div>
     </section>
@@ -691,7 +647,6 @@ export default function App() {
         <Marquee />
         <Film />
         <Features />
-        <Demos />
         <Everywhere />
         <MuscleMap />
         <RecapReel />
