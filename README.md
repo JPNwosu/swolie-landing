@@ -32,3 +32,17 @@ If you want to use a custom domain (e.g., `swolie.com`):
 1. Update `vite.config.js` and change `base` to `'/'`
 2. Add a `CNAME` file in the `public/` folder with your domain
 3. Configure your DNS to point to GitHub Pages
+
+### Android App Links
+
+`public/.well-known/assetlinks.json` associates `swolie.com` with the Play-signed
+`com.koahzee.swolie` app. Its SHA-256 fingerprint comes from Play Console's
+App signing → Digital Asset Links JSON, not the upload certificate. The Android
+manifest limits matching links to `/share` paths. When changing Play signing
+keys, refresh this file using the certificates needed by distributed builds.
+
+Vite copies this file into `dist/.well-known/assetlinks.json`. Keep
+`public/.nojekyll` and the deploy command's `--dotfiles` option so GitHub Pages
+serves it. After deploying, verify that
+`https://swolie.com/.well-known/assetlinks.json` returns HTTP 200 with an
+`application/json` content type and no redirect.
