@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.koahzee.swolie",
+      "sha256_cert_fingerprints": [
+        "35:35:CA:A7:62:86:C0:FB:2B:09:04:B4:8E:7B:2E:48:E4:A1:1E:59:DA:56:13:8B:BC:F9:34:E3:BB:96:DB:0E"
+      ]
+    }
+  }
+]
