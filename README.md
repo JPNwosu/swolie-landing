@@ -1,6 +1,6 @@
 # Swolie Landing Page
 
-A simple landing page for the Swolie iOS fitness app.
+A simple landing page for the Swolie fitness app (iOS and Android).
 
 ## Development
 

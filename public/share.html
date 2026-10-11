@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#0a0e0d" />
     <title>Shared workout · swolie</title>
     <meta name="robots" content="noindex">
-    <meta name="description" content="Someone sent you a Swolie workout. Open it in the app to add it to your week. Free for iPhone and Apple Watch." />
+    <meta name="description" content="Someone sent you a Swolie workout. Open it in the app to add it to your week. Free for iPhone, Apple Watch and Android." />
 
     <!-- Brand typography (same families as the main site) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -27,7 +27,7 @@
     <meta property="og:site_name" content="swolie" />
     <meta property="og:url" content="https://swolie.com/share" />
     <meta property="og:title" content="Someone sent you a Swolie workout" />
-    <meta property="og:description" content="Open it in Swolie to add it to your week. Free for iPhone and Apple Watch." />
+    <meta property="og:description" content="Open it in Swolie to add it to your week. Free for iPhone, Apple Watch and Android." />
     <meta property="og:image" content="https://swolie.com/images/og-share-v2.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -35,7 +35,7 @@
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Someone sent you a Swolie workout" />
-    <meta name="twitter:description" content="Open it in Swolie to add it to your week. Free for iPhone and Apple Watch." />
+    <meta name="twitter:description" content="Open it in Swolie to add it to your week. Free for iPhone, Apple Watch and Android." />
     <meta name="twitter:image" content="https://swolie.com/images/og-share-v2.png" />
 
     <style>
@@ -333,6 +333,7 @@
         transition: transform 160ms ease;
       }
 
+      .badges { display: flex; justify-content: center; flex-wrap: wrap; gap: 0 12px; }
       .badge:hover { transform: translateY(-2px); }
       .badge img { height: 52px; display: block; }
 
@@ -405,7 +406,7 @@
     <div class="page">
       <header class="top reveal" style="--d: 0ms">
         <a class="brand" href="/">swolie</a>
-        <a class="top-link" href="https://apps.apple.com/us/app/swolie-gym-workout-tracker/id6756705472">Get the app</a>
+        <a class="top-link" href="/">Get the app</a>
       </header>
 
       <main>
@@ -442,9 +443,14 @@
 
         <section class="cta reveal" style="--d: 420ms">
           <p class="cta-copy" id="cta-copy">Grab Swolie free, then open this link again.<br />It lands straight in your Workout tab.</p>
-          <a class="badge" href="https://apps.apple.com/us/app/swolie-gym-workout-tracker/id6756705472">
-            <img src="/images/app-store-badge.svg" alt="Download on the App Store" />
-          </a>
+          <div class="badges">
+            <a class="badge" href="https://apps.apple.com/us/app/swolie-gym-workout-tracker/id6756705472">
+              <img src="/images/app-store-badge.svg" alt="Download on the App Store" />
+            </a>
+            <a class="badge" href="https://play.google.com/store/apps/details?id=com.koahzee.swolie">
+              <img src="/images/google-play-badge.png" alt="Get it on Google Play" />
+            </a>
+          </div>
           <p class="cta-note"><b>Already have Swolie?</b> This link opens right in the app.</p>
         </section>
       </main>

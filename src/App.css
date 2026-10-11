@@ -110,10 +110,12 @@ button { font: inherit; }
 }
 .callout img { width: 100%; }
 
+.store-badges { display: flex; align-items: center; flex-wrap: wrap; gap: 12px 14px; }
 .store-badge { display: inline-block; border-radius: 12px; transition: transform .35s var(--bounce); }
 .store-badge img { height: 58px; width: auto; }
 .store-badge.big img { height: 70px; }
 .store-badge:hover { transform: translateY(-3px) rotate(-2deg) scale(1.04); }
+@media (max-width: 420px) { .store-badges { gap: 10px; } .store-badge img, .store-badge.big img { height: 46px; } }
 
 /* ---------- push-sticker buttons ---------- */
 .btn {

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import './App.css'
 
 const APP_STORE_URL = 'https://apps.apple.com/us/app/swolie-gym-workout-tracker/id6756705472'
+const PLAY_STORE_URL = 'https://play.google.com/store/apps/details?id=com.koahzee.swolie'
 const base = import.meta.env.BASE_URL
 const pose = (name) => `${base}poses/swolie-${name}.webp`
 const shot = (name) => `${base}shots/${name}.webp`
@@ -155,6 +156,24 @@ function AppStoreBadge({ className = '' }) {
   )
 }
 
+function PlayStoreBadge({ className = '' }) {
+  return (
+    <a href={PLAY_STORE_URL} className={`store-badge ${className}`} target="_blank" rel="noopener noreferrer"
+      aria-label="Get swolie on Google Play">
+      <img src={`${base}images/google-play-badge.png`} alt="Get it on Google Play" />
+    </a>
+  )
+}
+
+function StoreBadges({ className = '' }) {
+  return (
+    <div className="store-badges">
+      <AppStoreBadge className={className} />
+      <PlayStoreBadge className={className} />
+    </div>
+  )
+}
+
 // ---------------------------------------------------------------------------
 
 const MARQUEE_A = ['a coach for every set', 'plans that fit your week', 'smart progression', 'live heart rate', '1,600+ exercise demos', 'weekly wrapped recaps']
@@ -257,7 +276,7 @@ function Nav() {
           <a href="#everywhere">Watch</a>
           <a href="#moods">Meet swolie</a>
         </div>
-        <PushButton className="nav-cta" size="sm" href={APP_STORE_URL} target="_blank" rel="noopener noreferrer">Get the app</PushButton>
+        <PushButton className="nav-cta" size="sm" href="#download">Get the app</PushButton>
       </nav>
     </header>
   )
@@ -282,7 +301,7 @@ function Hero() {
       <Burst points={18} inner={0.78} className="hero-burst" />
       <div className="hero-grid shell">
         <div className="hero-copy">
-          <p className="pill-label hero-label"><span className="dot" /> Now on the App Store</p>
+          <p className="pill-label hero-label"><span className="dot" /> Now on iPhone &amp; Android</p>
           <h1 className="display">
             <span className="line">Meet your</span>
             <span className="line">gym buddy<span className="accent">.</span></span>
@@ -292,10 +311,10 @@ function Hero() {
             when it&apos;s time to go heavier. Basically a spotter that lives in your pocket.
           </p>
           <div className="hero-actions">
-            <AppStoreBadge />
+            <StoreBadges />
             <PushButton variant="secondary" icon="play" href="#film">Watch the 29-second pitch</PushButton>
           </div>
-          <p className="hero-meta">For iPhone and Apple Watch</p>
+          <p className="hero-meta">For iPhone, Apple Watch and Android</p>
         </div>
 
         <div className="hero-art" aria-label="swolie app preview">
@@ -643,7 +662,7 @@ function Reviews() {
 
 function FinalCta() {
   return (
-    <section className="final" data-scroll="through">
+    <section className="final" id="download" data-scroll="through">
       <Burst points={18} inner={0.78} className="final-burst" />
       <div className="shell final-inner" data-reveal>
         <DieCut name="victory-dance" alt="swolie doing a victory dance" burst="lime" points={16} className="final-mascot" />
@@ -652,8 +671,8 @@ function FinalCta() {
           <span>swolie</span>
         </div>
         <h2 className="display">Your next set<br />starts here.</h2>
-        <AppStoreBadge className="big" />
-        <p className="final-meta">iPhone · Apple Watch · your virtual gym buddy</p>
+        <StoreBadges className="big" />
+        <p className="final-meta">iPhone · Apple Watch · Android · your virtual gym buddy</p>
       </div>
     </section>
   )
